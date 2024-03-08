@@ -1,8 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+import { Provider } from 'react-redux'
 import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material'
+import store from './store/store'
+
 
 let theme = createTheme({
     typography:{
@@ -15,8 +18,10 @@ let theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}> 
-      <App />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}> 
+        <App />
+      </ThemeProvider>
+    </Provider> 
   </React.StrictMode>,
 )
