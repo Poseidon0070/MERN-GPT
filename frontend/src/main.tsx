@@ -6,7 +6,6 @@ import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material'
 import store from './store/store'
 
-
 let theme = createTheme({
     typography:{
       fontFamily : "Roboto Slab,serif",

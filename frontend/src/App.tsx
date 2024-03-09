@@ -29,3 +29,5 @@ function App() {
 }
 
 export default App
+
+//response.data is not a function; it's a property that holds the data of the response (in axios)

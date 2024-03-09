@@ -16,11 +16,12 @@ const getAllUsers = async(req : Request, res : Response) => {
 
 const userSignup = async(req : Request, res : Response) => { 
     try{
+        console.log(".......................................................")
         let {name, email, password} = req.body
         let ExistingUser = await User.findOne({email : email})
         console.log(ExistingUser)
         if(ExistingUser) {
-            return res.status(401).json({message : "User Already Exists with the specified email. Please login.", ExistingUser}) 
+            return res.status(401).json({message : "User Already Exists with the specified email.", ExistingUser}) 
         }
 
         let hashedPassword = await bcrypt.hash(password, 10)
@@ -37,11 +38,11 @@ const userSignup = async(req : Request, res : Response) => {
         expires.setDate(expires.getDate() + 7)
         res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'localhost', expires: expires, signed:true })
 
-        return res.status(201).json({message : "User Created Successfully", user : user})
+        return res.status(201).json({msg : "User Created Successfully", user : user})
     }
     catch(err){
         console.log(err)
-        return res.status(500).json({message : err.message})
+        return res.status(500).json({msg : "Internal server error. Please try again later"})
     }
 }
 
@@ -50,12 +51,12 @@ const userLogin = async(req : Request, res : Response) => {
         let {email, password} = req.body 
         let ExistingUser = await User.findOne({email})
         if(!ExistingUser) {
-            return res.status(401).json({message : "User does not exists with the specified email. Please Signup."}) 
+            return res.status(401).json({msg : "User does not exists with the specified email. Please Signup."}) 
         }
 
         let isPasswordCorrect = await bcrypt.compare(password, ExistingUser.password)
         if (!isPasswordCorrect) {
-            return res.status(403).json({message : "Incorrect credentials!"})
+            return res.status(403).json({msg : "Incorrect credentials!"})
         }
 
         res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'localhost', signed:true })
@@ -64,7 +65,7 @@ const userLogin = async(req : Request, res : Response) => {
         expires.setDate(expires.getDate() + 7)
         res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'localhost', expires: expires, signed:true })
 
-        return res.status(200).json({message : "Login Successfull", userId : ExistingUser._id})
+        return res.status(200).json({msg : "Login Successfull", user : ExistingUser})
     } catch (error) {
         
     }

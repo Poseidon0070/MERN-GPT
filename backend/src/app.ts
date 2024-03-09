@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import morgan from 'morgan'
 import appRouter from './routes/index.js'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express()
 dotenv.config()
@@ -13,6 +14,10 @@ const MONGODB_URL = process.env.MONGODB_URL
 app.use(express.json())
 app.use(morgan("dev"))
 app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(cors({
+  origin : "http://localhost:5173",
+  credentials : true
+}))
 app.use(appRouter)
 
 mongoose.connect(MONGODB_URL)
@@ -25,3 +30,5 @@ mongoose.connect(MONGODB_URL)
   console.log(err)
   throw new Error(err)
 }) 
+
+// res.cookie function is used to automatically set cookie in the browser cookie storage!!

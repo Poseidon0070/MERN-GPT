@@ -6,7 +6,7 @@ type UserState = {
 }
 
 const initialState: UserState = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     user: null,
 };
 
