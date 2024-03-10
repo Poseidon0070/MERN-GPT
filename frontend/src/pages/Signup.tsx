@@ -1,12 +1,25 @@
 import { Form, Link, redirect } from "react-router-dom"
 import type { ActionFunction } from "react-router";
 import Animation from "../components/Animation";
-import axios, { Axios } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useActionData } from "react-router-dom";
+import { useAppDispatch } from "../store/exporter";
+import { userActions } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Signup() {
-  let actionData = useActionData()
-  console.log(actionData)
+  let actionResponse: any = useActionData()
+  let navigate = useNavigate()
+  let dispatch = useAppDispatch()
+  useEffect(() => {
+    if (actionResponse && actionResponse.status === 201) {
+      let userData = actionResponse.data
+      dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      navigate('/')
+    }
+  }, [actionResponse, dispatch, navigate])
+
   return (
     <div className="container">
       <div>
@@ -27,8 +40,8 @@ function Signup() {
             <input className="user-box-input" name="password" type="password" required />
             <label className="user-box-label">Password</label>
           </div>
-              {actionData && actionData.data.message && <p style={{fontSize:"12px", color:"red", textAlign:"center"}}>{actionData.data.message}</p>}
-              {actionData && actionData.data.error && actionData.data.error.map((err) => <p style={{fontSize:"12px", color:"red", textAlign:"center"}}>{err.msg}</p>)}
+          {actionResponse && actionResponse.data.message && <p style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{actionResponse.data.message}</p>}
+          {actionResponse && actionResponse.data.error && actionResponse.data.error.map((err: any) => <p key={err.msg} style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{err.msg}</p>)}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <a className="login-box-button">
               <span></span>
@@ -62,34 +75,47 @@ function Signup() {
 export default Signup
 
 let SignupAction: ActionFunction = async ({ request }) => {
-  console.log("here")
   let userData = await request.formData()
   let user = {
-    name : userData.get('name'),
+    name: userData.get('name'),
     email: userData.get('email'),
     password: userData.get('password')
   }
   console.log(user)
-  
-  console.log('1................')
-  try{
-    let response = await axios.post('http://localhost:8080/user/signup', user, {withCredentials:true})
-    console.log('2................')
-    if(response.status === 200) {
-      let data = response.data 
-      console.log(data)
-      return redirect('..')
-    }else{
-      console.log('3................')
-      return response
-    }
 
-  }catch(err){
-    console.log(err)
-    // console.log('................')
+  try {
+    let response: AxiosResponse = await axios.post('http://localhost:8080/user/signup', user, { withCredentials: true })
+    return response
+
+  } catch (err: any) {
     return err.response
   }
 };
-//
+// let SignupAction: ActionFunction = async ({ request }) => {
+//   let userData = await request.formData()
+//   let user = {
+//     name: userData.get('name'),
+//     email: userData.get('email'),
+//     password: userData.get('password')
+//   }
+//   console.log(user)
+
+//   try {
+//     let response : AxiosResponse = await axios.post('http://localhost:8080/user/signup', user, { withCredentials: true })
+//     if (response.status === 201) {
+//       let data = response.data
+//       let dispatch = useAppDispatch()
+//       dispatch(userActions.login({name: data.name, email: data.email}))
+//       console.log(data)
+//       return redirect('/')
+//     } else {
+//       return response
+//     }
+
+//   } catch (err: any) {
+//     console.log(err)
+//     return err.response
+//   }
+// };
 
 export { SignupAction }
