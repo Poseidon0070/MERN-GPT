@@ -1,11 +1,12 @@
-import { useAppDispatch, useAppSelector } from "../store/exporter"
+import { useAppSelector } from "../store/exporter"
 
 function Home() {
-  let isLoggedIn: boolean = useAppSelector((state) => state.isLoggedIn)
-  console.log(isLoggedIn)
+  let user = useAppSelector(state => state.user)
+  console.log(user)
   return (
-    <div>
-    </div>
+    <>
+      {user && <h1 style={{textAlign:"center", marginTop:"20px"}}>Hi {user.name}</h1>}
+    </>
   )
 }
 

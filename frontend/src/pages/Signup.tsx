@@ -1,4 +1,4 @@
-import { Form, Link, redirect } from "react-router-dom"
+import { Form, Link } from "react-router-dom"
 import type { ActionFunction } from "react-router";
 import Animation from "../components/Animation";
 import axios, { AxiosResponse } from "axios";
@@ -14,7 +14,7 @@ function Signup() {
   let dispatch = useAppDispatch()
   useEffect(() => {
     if (actionResponse && actionResponse.status === 201) {
-      let userData = actionResponse.data
+      let userData = actionResponse.data.user
       dispatch(userActions.login({ name: userData.name, email: userData.email }))
       navigate('/')
     }
@@ -40,7 +40,7 @@ function Signup() {
             <input className="user-box-input" name="password" type="password" required />
             <label className="user-box-label">Password</label>
           </div>
-          {actionResponse && actionResponse.data.message && <p style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{actionResponse.data.message}</p>}
+          {actionResponse && actionResponse.data.msg && <p style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{actionResponse.data.msg}</p>}
           {actionResponse && actionResponse.data.error && actionResponse.data.error.map((err: any) => <p key={err.msg} style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{err.msg}</p>)}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <a className="login-box-button">
@@ -91,31 +91,6 @@ let SignupAction: ActionFunction = async ({ request }) => {
     return err.response
   }
 };
-// let SignupAction: ActionFunction = async ({ request }) => {
-//   let userData = await request.formData()
-//   let user = {
-//     name: userData.get('name'),
-//     email: userData.get('email'),
-//     password: userData.get('password')
-//   }
-//   console.log(user)
 
-//   try {
-//     let response : AxiosResponse = await axios.post('http://localhost:8080/user/signup', user, { withCredentials: true })
-//     if (response.status === 201) {
-//       let data = response.data
-//       let dispatch = useAppDispatch()
-//       dispatch(userActions.login({name: data.name, email: data.email}))
-//       console.log(data)
-//       return redirect('/')
-//     } else {
-//       return response
-//     }
-
-//   } catch (err: any) {
-//     console.log(err)
-//     return err.response
-//   }
-// };
 
 export { SignupAction }

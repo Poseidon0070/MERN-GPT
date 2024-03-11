@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import User from "../models/user.js"
 import bcrypt from "bcrypt"
-import createToken from "../utils/auth-token.js"
+import {verifyToken, createToken} from "../utils/auth-token.js"
 
 const getAllUsers = async(req : Request, res : Response) => {
     try{
@@ -10,18 +10,17 @@ const getAllUsers = async(req : Request, res : Response) => {
     }
     catch(err){
         console.log(err)
-        return res.status(500).json({message : err.message})
+        return res.status(500).json({msg : err.message})
     }
 }
 
 const userSignup = async(req : Request, res : Response) => { 
     try{
-        console.log(".......................................................")
         let {name, email, password} = req.body
         let ExistingUser = await User.findOne({email : email})
         console.log(ExistingUser)
         if(ExistingUser) {
-            return res.status(401).json({message : "User Already Exists with the specified email.", ExistingUser}) 
+            return res.status(401).json({msg : "User Already Exists with the specified email.", ExistingUser}) 
         }
 
         let hashedPassword = await bcrypt.hash(password, 10)
@@ -38,25 +37,27 @@ const userSignup = async(req : Request, res : Response) => {
         expires.setDate(expires.getDate() + 7)
         res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'localhost', expires: expires, signed:true })
 
-        return res.status(201).json({msg : "User Created Successfully", user : user})
+        return res.status(201).json({msg : "User Created Successfully.", user : user})
     }
     catch(err){
         console.log(err)
-        return res.status(500).json({msg : "Internal server error. Please try again later"})
+        return res.status(500).json({msg : "Internal server error. Please try again later."})
     }
 }
 
 const userLogin = async(req : Request, res : Response) => {
     try {
         let {email, password} = req.body 
-        let ExistingUser = await User.findOne({email})
+        console.log(email)
+        let ExistingUser = await User.findOne({email:email})
         if(!ExistingUser) {
-            return res.status(401).json({msg : "User does not exists with the specified email. Please Signup."}) 
+            console.log("....................")
+            return res.status(401).json({msg : "User does not exists with this email."}) 
         }
 
         let isPasswordCorrect = await bcrypt.compare(password, ExistingUser.password)
         if (!isPasswordCorrect) {
-            return res.status(403).json({msg : "Incorrect credentials!"})
+            return res.status(403).json({msg : "Incorrect email or password."})
         }
 
         res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'localhost', signed:true })
@@ -65,9 +66,39 @@ const userLogin = async(req : Request, res : Response) => {
         expires.setDate(expires.getDate() + 7)
         res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'localhost', expires: expires, signed:true })
 
-        return res.status(200).json({msg : "Login Successfull", user : ExistingUser})
-    } catch (error) {
-        
+        return res.status(201).json({msg : "Login Successfull", user : ExistingUser})
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({msg : "Internal server error. Please try again later."})
     }
 } 
-export {getAllUsers, userSignup, userLogin}
+
+const verifyUser = async(req : Request, res : Response) => {
+    console.log(res.locals.jwtData)
+    try{
+        let userId = res.locals.jwtData.id;
+        let user = await User.findById(userId)
+        if(!user){
+            return res.status(401).send("Invalid Token.")
+        }
+        console.log(typeof(user._id))
+        if(user._id.toString() !== res.locals.jwtData.id) {
+            return res.status(401).send("Unauthorized Access.")
+        }else{
+            return res.status(200).json({user:user})
+        }
+    }catch(err){
+        return res.status(500).send("Internal server error")
+    }
+}
+
+const logoutUser = async(req : Request, res : Response) => {
+    try{
+        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'localhost', signed:true })
+        return res.status(200).json( { msg:"Logged out successfully" });
+    }catch(err){
+        return res.status(500).json({ err:err });
+    }
+}
+
+export {getAllUsers, userSignup, userLogin, verifyUser}

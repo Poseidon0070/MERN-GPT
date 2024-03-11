@@ -1,54 +1,65 @@
-import { ActionFunction, Link, redirect } from "react-router-dom"
+import { ActionFunction, Form, Link, useActionData, useNavigate } from "react-router-dom"
 import Animation from "../components/Animation"
 import axios, { AxiosResponse } from "axios";
+import { useAppDispatch } from "../store/exporter";
+import { useEffect } from "react";
+import { userActions } from "../store/store";
 
 function Login() {
+  let actionResponse: any = useActionData()
+  let navigate = useNavigate()
+  let dispatch = useAppDispatch()
+  useEffect(() => {
+    if (actionResponse && actionResponse.status === 201) {
+      let userData = actionResponse.data.user
+      dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      navigate('/')
+    }
+  }, [actionResponse, dispatch, navigate])
   return (
     <div className="container">
-    <div>
-    <Animation />
-    </div>
-    <div className="login-box">
-      <h2 className="heading-login-box">Login</h2>
-      <form>
-        <div className="user-box">
-          <input className="user-box-input" name='name' autoComplete="off" type="text" required />
-          <label className="user-box-label">Name</label>
-        </div>
-        <div className="user-box">
-          <input className="user-box-input" name='email' autoComplete="off" type="text" required />
-          <label className="user-box-label">Email</label>
-        </div>
-        <div className="user-box">
-          <input className="user-box-input" name="password" type="password" required />
-          <label className="user-box-label">Password</label>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <a className="login-box-button">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <input type="submit" style={{
-              border: 'none',
-              background: 'none',
-              color: 'inherit',
-              padding: 0,
-              font: 'inherit',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              width: "100px",
-              height: "30px",
-              margin: "0px"
-            }} value="Login" />
-          </a>
-        </div>
-      </form>
-      <div style={{ marginTop: "25px", textAlign: "center" }}>
-        <p>Account not created yet ?</p>
-        <Link to='../signup' className='no-dec' style={{ background: 'none' }}>Signup here</Link>
+      <div>
+        <Animation />
       </div>
-    </div>
+      <div className="login-box">
+        <h2 className="heading-login-box">Login</h2>
+        <Form method="POST"> 
+          <div className="user-box">
+            <input className="user-box-input" name='email' autoComplete="off" type="text" required />
+            <label className="user-box-label">Email</label>
+          </div>
+          <div className="user-box">
+            <input className="user-box-input" name="password" type="password" required />
+            <label className="user-box-label">Password</label>
+          </div>
+          {actionResponse && actionResponse.data.msg && <p style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{actionResponse.data.msg}</p>}
+          {actionResponse && actionResponse.data.error && actionResponse.data.error.map((err: any) => <p key={err.msg} style={{ fontSize: "12px", color: "red", textAlign: "center" }}>{err.msg}</p>)}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <a className="login-box-button">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <input type="submit" style={{
+                border: 'none',
+                background: 'none',
+                color: 'inherit',
+                padding: 0,
+                font: 'inherit',
+                cursor: 'pointer',
+                textDecoration: 'none',
+                width: "100px",
+                height: "30px",
+                margin: "0px"
+              }} value="Login" />
+            </a>
+          </div>
+        </Form>
+        <div style={{ marginTop: "25px", textAlign: "center" }}>
+          <p>Account not created yet ?</p>
+          <Link to='../signup' className='no-dec' style={{ background: 'none' }}>Signup here</Link>
+        </div>
+      </div>
     </div>
   )
 }
@@ -56,7 +67,6 @@ function Login() {
 export default Login
 
 let loginAction: ActionFunction = async ({ request }) => {
-  console.log("here")
   let userData = await request.formData()
   let user = {
     name: userData.get('name'),
@@ -66,15 +76,8 @@ let loginAction: ActionFunction = async ({ request }) => {
   console.log(user)
 
   try {
-    let response : AxiosResponse = await axios.post('http://localhost:8080/user/login', user, { withCredentials: true })
-    if (response.status === 200) {
-      let data = response.data
-      console.log(data)
-      return redirect('..')
-    } else {
-      return response
-    }
-
+    let response: AxiosResponse = await axios.post('http://localhost:8080/user/login', user, { withCredentials: true })
+    return response
   } catch (err: any) {
     return err.response
   }

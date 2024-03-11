@@ -2,13 +2,33 @@ import './App.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Home from './pages/Home'
 import Error from './pages/Error'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
+import Login, { loginAction } from './pages/Login'
+import Signup, { SignupAction } from './pages/Signup'
 import Chat from './pages/Chat'
 import MainNavigation from './components/MainNavigation'
-import { SignupAction } from './pages/Signup.tsx'
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useAppDispatch } from './store/exporter'
+import { userActions } from './store/store'
+
 
 function App() {
+    let dispatch = useAppDispatch()
+    useEffect(() => {
+        const verifyUser = async () => {
+          try {
+            const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
+            if(response){
+                let userData = response.data.user
+                dispatch(userActions.login({ name: userData.name, email: userData.email }))
+            }
+          } catch (error) {
+
+          }
+        };
+    
+        verifyUser();
+     }, []);
 
     let router = createBrowserRouter([
         {   
@@ -17,8 +37,8 @@ function App() {
             errorElement : <Error />,
             children : [
                 {path: '' , element : <Home />}, 
-                {path : 'login', element : <Login />}, 
-                {path : 'signup', element : <Signup />, action : SignupAction},
+                {path : 'login', element : <Login />, action: loginAction}, 
+                {path : 'signup', element : <Signup />, action: SignupAction},
                 {path : 'chat', element : <Chat />} 
             ]
         },
