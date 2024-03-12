@@ -16,11 +16,16 @@ let userAuth = createSlice({
     reducers: {
         login : (state : UserState, action: { payload: {name: String, email: String} }) => {
             state.isLoggedIn=true
-            state.user={...action.payload}
+            state.user = {...action.payload}
         },
-        // logout : ()
+        logout : (state: UserState) => {
+            state.isLoggedIn = false 
+            state.user = null
+        }
     }
 })
+
+
 
 let store = configureStore({
     reducer: userAuth.reducer

@@ -18,7 +18,6 @@ const userSignup = async(req : Request, res : Response) => {
     try{
         let {name, email, password} = req.body
         let ExistingUser = await User.findOne({email : email})
-        console.log(ExistingUser)
         if(ExistingUser) {
             return res.status(401).json({msg : "User Already Exists with the specified email.", ExistingUser}) 
         }
@@ -48,10 +47,8 @@ const userSignup = async(req : Request, res : Response) => {
 const userLogin = async(req : Request, res : Response) => {
     try {
         let {email, password} = req.body 
-        console.log(email)
         let ExistingUser = await User.findOne({email:email})
         if(!ExistingUser) {
-            console.log("....................")
             return res.status(401).json({msg : "User does not exists with this email."}) 
         }
 
@@ -74,14 +71,12 @@ const userLogin = async(req : Request, res : Response) => {
 } 
 
 const verifyUser = async(req : Request, res : Response) => {
-    console.log(res.locals.jwtData)
     try{
         let userId = res.locals.jwtData.id;
         let user = await User.findById(userId)
         if(!user){
             return res.status(401).send("Invalid Token.")
         }
-        console.log(typeof(user._id))
         if(user._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Unauthorized Access.")
         }else{
@@ -94,6 +89,7 @@ const verifyUser = async(req : Request, res : Response) => {
 
 const logoutUser = async(req : Request, res : Response) => {
     try{
+        console.log("hahahahaha....................")
         res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'localhost', signed:true })
         return res.status(200).json( { msg:"Logged out successfully" });
     }catch(err){
@@ -101,4 +97,4 @@ const logoutUser = async(req : Request, res : Response) => {
     }
 }
 
-export {getAllUsers, userSignup, userLogin, verifyUser}
+export {getAllUsers, userSignup, userLogin, verifyUser, logoutUser}  

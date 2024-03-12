@@ -18,12 +18,13 @@ function App() {
         const verifyUser = async () => {
           try {
             const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
+            console.log(response.data)
             if(response){
                 let userData = response.data.user
                 dispatch(userActions.login({ name: userData.name, email: userData.email }))
             }
           } catch (error) {
-
+            console.log(error)
           }
         };
     
