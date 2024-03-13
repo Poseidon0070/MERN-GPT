@@ -9,6 +9,7 @@ let createToken = (id : String, email : String) => {
 }
 
 let verifyToken = async (req:Request, res: Response, next: NextFunction) => {
+    console.log(req.path)
     const token = req.signedCookies['auth_token']
     if(!token || token.trim() === ""){
         return res.status(401).send("No token found")
@@ -22,4 +23,4 @@ let verifyToken = async (req:Request, res: Response, next: NextFunction) => {
     }
 }
 
-export {verifyToken, createToken }
+export {verifyToken, createToken}

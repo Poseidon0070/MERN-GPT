@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material'
 import store from './store/store'
+import { Toaster } from 'sonner'
 
 let theme = createTheme({
     typography:{
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}> 
+      <Toaster richColors/>
         <App />
       </ThemeProvider>
     </Provider> 

@@ -89,7 +89,6 @@ const verifyUser = async(req : Request, res : Response) => {
 
 const logoutUser = async(req : Request, res : Response) => {
     try{
-        console.log("hahahahaha....................")
         res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'localhost', signed:true })
         return res.status(200).json( { msg:"Logged out successfully" });
     }catch(err){

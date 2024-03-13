@@ -7,6 +7,7 @@ import { useAppDispatch } from "../store/exporter";
 import { userActions } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 function Signup() {
   let actionResponse: any = useActionData()
@@ -16,7 +17,11 @@ function Signup() {
     if (actionResponse && actionResponse.status === 201) {
       let userData = actionResponse.data.user
       dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      toast.success("Signup Successful.")
       navigate('/')
+    }
+    if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
+      toast.error('Invalid credentials! Please retry.')
     }
   }, [actionResponse, dispatch, navigate])
 

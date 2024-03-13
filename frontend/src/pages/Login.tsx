@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { useAppDispatch } from "../store/exporter";
 import { useEffect } from "react";
 import { userActions } from "../store/store";
+import { toast } from "sonner";
 
 function Login() {
   let actionResponse: any = useActionData()
@@ -13,7 +14,11 @@ function Login() {
     if (actionResponse && actionResponse.status === 201) {
       let userData = actionResponse.data.user
       dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      toast.success("Login Successful")
       navigate('/')
+    }
+    if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
+      toast.error('Invalid credentials! Please retry.')
     }
   }, [actionResponse, dispatch, navigate])
   return (

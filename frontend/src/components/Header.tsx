@@ -5,6 +5,7 @@ import NavigationLink from "./NavigationLink";
 import { useAppDispatch, useAppSelector } from "../store/exporter";
 import axios from "axios";
 import { userActions } from "../store/store";
+import { toast } from "sonner";
 
 const Header = () => {
   let isLoggedIn = useAppSelector(state => state.isLoggedIn)
@@ -13,15 +14,16 @@ const Header = () => {
   let logoutHandler = async() => {
     try{
       let response = await axios.get('http://localhost:8080/user/logout', {withCredentials:true})
-      console.log(response)
-      console.log("...................................................")
       
       if(response.status === 200){
-          dispatch(userActions.logout())
+        dispatch(userActions.logout())
+        toast.success("Logged out successfull")
       }else{
+        toast.error("Some error occured! Failed to logout")
           console.log(response.data)
       }
       }catch(err){
+        toast.error("Some error occured! Failed to logout")
           throw err
       }
   }
