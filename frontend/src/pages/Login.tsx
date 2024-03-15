@@ -17,7 +17,7 @@ function Login() {
       toast.success("Login Successful")
       navigate('/')
     }
-    if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
+    else if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
       toast.error('Invalid credentials! Please retry.')
     }
   }, [actionResponse, dispatch, navigate])

@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 
-
 const chatSchema = new mongoose.Schema({
-    role : {
-        type : String,
-        require : true
+    id: {
+        type: String,
     },
-    content : {
-        type : String,
-        require : true 
+    role: {
+        type: String,
+        required: true,
     },
-    chats : []
+    content: {
+        type: String,
+        required: true,
+    },
 })
 
 export default chatSchema

@@ -17,6 +17,7 @@ let verifyToken = async (req:Request, res: Response, next: NextFunction) => {
     let data = jwt.verify(token,process.env.JWT_SECRET)
     if(data){
         res.locals.jwtData = data
+        console.log("-----------------------------------------------------")
         return next()
     }else{
         return res.status(403).send('Invalid Token')
