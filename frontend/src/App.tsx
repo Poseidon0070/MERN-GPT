@@ -13,21 +13,21 @@ import { userActions } from './store/store'
 
 function App() {
     let dispatch = useAppDispatch()
-    useEffect(() => {
-        const verifyUser = async () => {
-          try {
-            const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
-            if(response){
-                let userData = response.data.user
-                dispatch(userActions.login({ name: userData.name, email: userData.email }))
-            }
-          } catch (error) {
-            console.log(error)
-          }
-        };
+    // useEffect(() => {
+    //     const verifyUser = async () => {
+    //       try {
+    //         const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
+    //         if(response){
+    //             let userData = response.data.user
+    //             dispatch(userActions.login({ name: userData.name, email: userData.email }))
+    //         }
+    //       } catch (error) {
+    //         console.log(error)
+    //       }
+    //     };
     
-        verifyUser();
-     }, []);
+    //     verifyUser();
+    //  }, []);
 
     let router = createBrowserRouter([
         {   

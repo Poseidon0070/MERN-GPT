@@ -1,98 +1,99 @@
-import React from "react";
-import { Box, Avatar, Typography } from "@mui/material";
-
-function extractCodeFromString(message: string) {
-  if (message.includes("```")) {
-    const blocks = message.split("```");
-    return blocks;
-  }
-}
-
-function isCodeBlock(str: string) {
-  if (
-    str.includes("=") ||
-    str.includes(";") ||
-    str.includes("[") ||
-    str.includes("]") ||
-    str.includes("{") ||
-    str.includes("}") ||
-    str.includes("#") ||
-    str.includes("//")
-  ) {
-    return true;
-  }
-  return false;
-}
-const ChatItem = ({
-  content,
-  role,
-}: {
-  content: string;
-  role: "user" | "assistant";
-}) => {
-  return role == "assistant" ? (
-    <Box
-      sx={{
-        display: "flex",
-        p: 2,
-        bgcolor: "#004d5612",
-        gap: 2,
-        borderRadius: 2,
-        my: 1,
-      }}
-    >
-      {/* <Avatar sx={{ ml: "0" }}>
-        <img src="openai.png" alt="openai" width={"30px"} />
-      </Avatar> */}
-      <Box>
-        {/* {!messageBlocks && (
-          <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-        )}
-        {messageBlocks &&
-          messageBlocks.length &&
-          messageBlocks.map((block) =>
-            isCodeBlock(block) ? (
-              <SyntaxHighlighter style={coldarkDark} language="javascript">
-                {block}
-              </SyntaxHighlighter>
-            ) : (
-              <Typography sx={{ fontSize: "20px" }}>{block}</Typography>
-            )
-          )} */}
+import { Box, TextField, Typography } from '@mui/material'
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+const chat = () => {
+  return (
+    <Box sx={{ display: "flex", flex: "1", width: "100vw" }}>
+      <Box sx={{ flexShrink: "1", flexGrow: "0.1", margin: "6px", border: "3px solid grey", backgroundColor: "#171719", borderRadius: "30px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "20px" }}>
+        <Box sx={{ display: "flex" }}>
+          <Box sx={{
+            display: "flex", flexDirection: "column", width: "100%", transition: 'transform 300ms ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.03) translateX(5px)',
+              cursor: "pointer",
+            },
+          }}>
+            <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center" }}>
+              <ChatBubbleOutlineIcon fontSize="large" sx={{ mr: "8px", ml:"5px" }} />
+              <span>New Thread</span>
+            </Typography>
+          </Box>
+          <ClearRoundedIcon fontSize="medium" sx={{
+            ml: "auto", transition: 'transform 300ms ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.1)',
+              cursor: "pointer"
+            },
+          }} />
+        </Box>
+        <Box sx={{
+          mt: "auto",
+          transition: 'transform 300ms ease-in-out',
+          display: "flex",
+          justifyContent:"center",
+          borderTop:"2px solid #333333",
+          '&:hover': {
+            transform: 'scale(1.03)',
+            cursor: "pointer",
+          },
+        }}>
+          <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center", mt:"10px" }}>
+            <DeleteOutlinedIcon fontSize="large" />
+            <span>Delete History</span>
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "column", flex: "1", margin: "5px", backgroundColor: "#171719", borderRadius: "30px" }}>
+        <Box sx={{
+          ml: { xl: "auto", xs: "auto" },
+          mr: { xl: "auto", xs: "auto" },
+          height: "65px",
+          width: { xl: "60%", xs: "80%" },
+          background: "#333333",
+          mt: "auto",
+          mb: "25px",
+          borderRadius: "20px",
+          border: "3px solid grey",
+          position: "sticky",
+          zIndex: "5",
+          display:"flex",
+          alignItems:"center"
+        }}>
+          <TextField
+            id="standard-basic"
+            placeholder='Ask a followup question'
+            variant="standard"
+            sx={{
+              width: "98%", ml: "20px", mr: "10px",
+              color: "white",
+              '& .MuiInputBase-input': {
+                fontSize: '20px',
+                color: 'white',
+                textDecoration: 'none',
+              },
+              '& .MuiInput-underline:before': {
+                borderBottom: 'none',
+              },
+              '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+                borderBottom: 'none',
+              },
+              '& .MuiInput-underline:after': {
+                borderBottom: 'none',
+              },
+            }}
+          />
+          <div>
+            <ArrowForwardRoundedIcon fontSize='large' sx={{mr:"10px",transition: 'transform 300ms ease-in-out', mt:"8px",'&:hover': {
+              transform: 'translateX(1px)',
+              cursor: "pointer",
+            },}} />
+          </div>
+        </Box>
       </Box>
     </Box>
-  ) : (
-    <Box
-      sx={{
-        display: "flex",
-        p: 2,
-        bgcolor: "#004d56",
-        gap: 2,
-        borderRadius: 2,
-      }}
-    >
-      {/* <Avatar sx={{ ml: "0", bgcolor: "black", color: "white" }}>
-        {auth?.user?.name[0]}
-        {auth?.user?.name.split(" ")[1][0]}
-      </Avatar> */}
-      <Box>
-        {/* {!messageBlocks && (
-          <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-        )}
-        {messageBlocks &&
-          messageBlocks.length &&
-          messageBlocks.map((block) =>
-            isCodeBlock(block) ? (
-              <SyntaxHighlighter style={coldarkDark} language="javascript">
-                {block}
-              </SyntaxHighlighter>
-            ) : (
-              <Typography sx={{ fontSize: "20px" }}>{block}</Typography>
-            )
-          )} */}
-      </Box>
-    </Box>
-  );
-};
+  )
+}
 
-export default ChatItem;
+export default chat
