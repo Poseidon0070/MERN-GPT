@@ -1,6 +1,7 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { coy, atomDark, prism } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {  atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useAppSelector } from "../store/exporter";
 
 function extractCodeFromString(message: string) {
     if (message.includes("```")) {
@@ -9,13 +10,32 @@ function extractCodeFromString(message: string) {
     }
 }
 
+function parseData(data: any) {
+    const lines = data.split('\n');
+    const components: any = [];
+
+    lines.forEach((line: any) => {
+        if (line.startsWith('-')) {
+            const text = line.replace('-', '').trim();
+            components.push(<li>{text}</li>);
+        } else {
+            components.push(<p style={{ marginTop: "5px", marginBottom: "0px" }}>{line}</p>);
+        }
+    });
+
+    return components;
+}
+
+
 function isCodeBlock(str: string) {
-    return str.includes("=") || str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")
-    return false;
+    return ((str.includes("=") || str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")))
 }
 
 const ChatItem = ({ content, role }: { content: string, role: string }) => {
     const messageBlocks = extractCodeFromString(content);
+
+    let userData = useAppSelector(state => state.user)
+
     return role === "assistant" ? (
         <Box
             sx={{
@@ -37,20 +57,23 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
             </Box>
             <Box sx={{ mt: "-15px" }}>
                 {!messageBlocks && (
-                    <Typography sx={{ fontSize: "18px", ml: "50px" }}>{content}</Typography>
+                    parseData(content).map((block: string) => {
+                        return <Typography sx={{ fontSize: "18px", ml: "50px" }}>{block}</Typography>
+                    })
+
                 )}
                 <Box sx={{ ml: "50px" }}>
                     {messageBlocks &&
                         messageBlocks.length &&
-                        messageBlocks.map((block) =>
+                        messageBlocks.map((block, index) =>
                             isCodeBlock(block) ? (
-                                <Box sx={{ my: "15px" }}>
-                                    <SyntaxHighlighter style={atomDark} language={block[0]}>
+                                <Box sx={{ my: "15px" }} key={index}>
+                                    <SyntaxHighlighter key={index} style={atomDark} language="javascript">
                                         {block}
                                     </SyntaxHighlighter>
                                 </Box>
                             ) : (
-                                <Typography sx={{ fontSize: "18px" }}>{block}</Typography>
+                                <Typography key={index} sx={{ fontSize: "18px" }}>{block}</Typography>
                             )
                         )}
                 </Box>
@@ -69,23 +92,28 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
         >
             <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box sx={{ textAlign: "center" }}>
-                    <Avatar sx={{ height: "40px", width: "40px", color: "black", backgroundColor: "#6D2932" }}>
-                        S
+                    <Avatar sx={{ height: "40px", width: "40px", fontSize:"25px", color: "white", backgroundColor: "#76453B",
+                    display:"flex", justifyContent:"center", alignItems:"center" }}>
+                        <div>{userData.name[0]}</div>
                     </Avatar>
                 </Box>
                 <Typography variant="h6" fontWeight={"900"} sx={{ ml: "10px" }}>You</Typography>
             </Box>
             <Box sx={{ mt: "-15px" }}>
                 {!messageBlocks && (
-                    <Typography sx={{ fontSize: "18px", ml: "50px" }}>{content}</Typography>
+                    parseData(content).map((block: string) => {
+                        return <Typography sx={{ fontSize: "18px", ml: "50px" }}>{block}</Typography>
+                    })
                 )}
                 {messageBlocks &&
                     messageBlocks.length &&
-                    messageBlocks.map((block) =>
+                    messageBlocks.map((block, index) =>
                         isCodeBlock(block) ? (
-                            <SyntaxHighlighter style={atomDark}  language="javascript">
-                                {block}
-                            </SyntaxHighlighter>
+                            <Box sx={{ my: "15px" }} key={index}>
+                                <SyntaxHighlighter key={index} style={atomDark} language="javascript">
+                                    {block}
+                                </SyntaxHighlighter>
+                            </Box>
                         ) : (
                             <Typography sx={{ fontSize: "20px" }}>{block}</Typography>
                         )

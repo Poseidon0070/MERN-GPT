@@ -26,7 +26,7 @@ export const generateChatCompletion = async (
     user.chats.push({ content: message, role: "user" })
 
     const chatResponse = await g4f.chatCompletion(chats,options);
-
+    console.log(chatResponse)
     user.chats.push({role:"assistant", "content" : chatResponse});
     await user.save();
     return res.status(200).send({ response : chatResponse })

@@ -466,6 +466,7 @@ button:hover i::after {
   margin: 0 auto;
   /* Specify the height of the container */
   height: 200px; /* Adjust the height as needed */
+  scroll-behavior: smooth;
 
 }
 
@@ -498,7 +499,7 @@ button:hover i::after {
   /* Center the container horizontally */
   /* Specify the height of the container */
   height: 200px; /* Adjust the height as needed */
-
+  scroll-behavior: smooth;
 }
 
 /* Style the scrollbar */
@@ -535,6 +536,7 @@ button:hover i::after {
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-color: transparent transparent; /*just hides the scrollbar for firefox */
+  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {

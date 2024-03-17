@@ -5,7 +5,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ChatItem from '../components/ChatItem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
@@ -26,7 +26,22 @@ const Chat = () => {
   const theme = useTheme();
   const isScreenLargerThanLg = useMediaQuery(theme.breakpoints.up('lg'));
 
+  const chatContainerRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to the bottom when messages change
+    scrollToBottom();
+  }, [chats]);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      //@ts-ignore
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+
   let submitHandler = async() => {
+
     if(inputRef.current){
       let content = inputRef.current?.value 
       if(content === "") return ;
@@ -36,6 +51,7 @@ const Chat = () => {
         throw new Error("Unable to send chat");
       }
       const data = await res.data;
+      console.log(data.response)
       dispatch(userActions.setChats({role : "assistant", message : data.response}))
     }
   }
@@ -70,7 +86,7 @@ const Chat = () => {
           </Box>
           <Box sx={{
             mt: "10px",
-            height: "72vh",
+            height: "95%",
             display: "flex",
             flexDirection: "column",
             boxSizing: "border-box",
@@ -99,7 +115,7 @@ const Chat = () => {
         </Box>
       )}
 
-      <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "5px", backgroundColor: "#171719", borderRadius: "30px" }}>
+      <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "9px", backgroundColor: "#171719", borderRadius: "30px" }}>
         {isThreadOpen && isScreenLargerThanLg &&  
           <ArrowBackIosNewRoundedIcon 
             fontSize='large' 
@@ -114,6 +130,7 @@ const Chat = () => {
           />}
         <Box
           className="scrollable-container"
+          ref={chatContainerRef }
           sx={{
             ml: { xl: "auto", xs: "auto" },
             mr: { xl: "auto", xs: "auto" },
