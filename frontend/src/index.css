@@ -489,3 +489,87 @@ button:hover i::after {
 .scrollable-container::-webkit-scrollbar-thumb:hover {
   background: #555; /* Color of the scrollbar handle on hover */
 }
+.scrollable-chat {
+  /* Set overflow-y to scroll to enable vertical scrollbar */
+  overflow-y: hidden;
+  overflow-x: scroll  ;
+  /* Set the width of the container */
+  width: 60%;
+  /* Center the container horizontally */
+  /* Specify the height of the container */
+  height: 200px; /* Adjust the height as needed */
+
+}
+
+/* Style the scrollbar */
+.scrollable-chat::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+/* Track */
+.scrollable-chat::-webkit-scrollbar-track {
+  background: #171719; /* Color of the scrollbar track */
+}
+
+/* Handle */
+.scrollable-chat::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar handle */
+  border-radius: 20px;
+}
+
+/* Handle on hover */
+.scrollable-chat::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar handle on hover */
+}
+
+.scrollhost::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollhost ::-moz-scrollbar {
+  display: none;
+ 
+}
+
+.scrollhost {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-color: transparent transparent; /*just hides the scrollbar for firefox */
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  height: 5px;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-moz-scrollbar {
+  width: 5px;
+}
+
+::-moz-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-moz-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-moz-scrollbar-thumb:hover {
+  background: #555;
+}

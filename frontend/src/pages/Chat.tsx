@@ -4,41 +4,49 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
-import { useState } from 'react';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import { useRef, useState } from 'react';
 import ChatItem from '../components/ChatItem';
-
-const staticChats = [
-  { role: 'assistant', content: 'Hello! How can I assist you today?' },
-  { role: 'user', content: 'Hi, I need help with setting up my account.' },
-  { role: 'assistant', content: 'Sure, I can help with that. What specific issues are you facing?' },
-  { role: 'user', content: 'I\'m having trouble logging in. It keeps saying my password is incorrect.' },
-  { role: 'assistant', content: 'Let me check that for you. Could you please provide me with your email address?' },
-  { role: 'user', content: 'My email address is example@example.com' },
-  { role: 'assistant', content: 'I found your account. It looks like your password was recently changed. Have you tried resetting it?' },
-  { role: 'user', content: 'No, I haven\'t tried that yet.' },
-  { role: 'assistant', content: 'I recommend resetting your password by clicking on the "Forgot Password" link on the login page. You will receive instructions on how to reset your password via email.' },
-  { role: 'user', content: 'Okay, I will try that. Thank you!' },
-  { role: 'assistant', content: 'I recommend resetting your password by clicking on the "Forgot Password" link on the login page. You will receive instructions on how to reset your password via email.' },
-  { role: 'user', content: 'Okay, I will try that. Thank you!' },
-  { role: 'assistant', content: 'I recommend resetting your password by clicking on the "Forgot Password" link on the login page. You will receive instructions on how to reset your password via email.' },
-  { role: 'user', content: 'Okay, I will try that. Thank you!' },
-  { role: 'assistant', content: `'I recommend resetting your password by clicking on the "Forgot Password" link on the login page. You will receive instructions on how to reset your password via email.' },
-  { role: 'user', content: 'Okay, I will try that. Thank you!'` },
-];
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import axios from 'axios';
+import { useAppSelector, useAppDispatch } from '../store/exporter';
+import { userActions } from '../store/store';
 
 
 const Chat = () => {
-  const [isThreadOpen, setIsThreadOpen] = useState(true);
-
+  const [isThreadOpen, setIsThreadOpen] = useState<boolean>(true);
   const toggleThread = () => {
     setIsThreadOpen(prevState => !prevState);
   };
+  let inputRef = useRef<HTMLInputElement | null>(null)
+  let dispatch = useAppDispatch()
+  let chats = useAppSelector(state => state.chats)
+
+  const theme = useTheme();
+  const isScreenLargerThanLg = useMediaQuery(theme.breakpoints.up('lg'));
+
+  let submitHandler = async() => {
+    if(inputRef.current){
+      let content = inputRef.current?.value 
+      if(content === "") return ;
+      dispatch(userActions.setChats({role : "user", message : content}))
+      const res = await axios.post("http://localhost:8080/chat/new", { message : content }, {withCredentials:true});
+      if (res.status !== 200) {
+        throw new Error("Unable to send chat");
+      }
+      const data = await res.data;
+      dispatch(userActions.setChats({role : "assistant", message : data.response}))
+    }
+  }
 
   return (
     <Box sx={{ display: "flex", flex: "1", width: "100vw" }}>
       {isThreadOpen && (
-        <Box sx={{ flexShrink: "1",maxWidth:"400px", flexGrow: "0.1", margin: "6px", border: "3px solid grey", backgroundColor: "#171719",
-         borderRadius: "30px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding:"20px", transition: "width 0.5s" }}>
+        <Box sx={{
+          flexShrink: "1", maxWidth: "400px", flexGrow: "0.1", margin: "6px", border: "3px solid grey", backgroundColor: "#171719",
+          borderRadius: "30px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "20px", transition: "width 0.5s"
+        }}>
           <Box sx={{ display: "flex" }}>
             <Box sx={{
               display: "flex", flexDirection: "column", width: "100%", transition: 'transform 300ms ease-in-out',
@@ -61,17 +69,16 @@ const Chat = () => {
             }} onClick={toggleThread} />
           </Box>
           <Box sx={{
-            mt:"10px",
-            height:"72vh",
+            mt: "10px",
+            height: "72vh",
             display: "flex",
             flexDirection: "column",
             boxSizing: "border-box",
-            width: "100%", 
-            wordWrap:"break-word",
+            width: "100%",
+            wordWrap: "break-word",
             overflowY: "overlay",
-            scrollBehavior:"smooth"
+            scrollBehavior: "smooth"
           }}>
-  
           </Box>
           <Box sx={{
             mt: "auto",
@@ -92,51 +99,79 @@ const Chat = () => {
         </Box>
       )}
 
-      <Box sx={{ display: "flex",overflowY:"overlay",height:"89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "5px", backgroundColor: "#171719", borderRadius: "30px" }}>
-
+      <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "5px", backgroundColor: "#171719", borderRadius: "30px" }}>
+        {isThreadOpen && isScreenLargerThanLg &&  
+          <ArrowBackIosNewRoundedIcon 
+            fontSize='large' 
+            sx={{position:"relative", top:"50%"}}  
+            onClick={toggleThread}
+          />}
+        {!isThreadOpen && isScreenLargerThanLg &&  
+          <ArrowForwardIosRoundedIcon 
+            fontSize='large' 
+            sx={{position:"relative", top:"50%"}}  
+            onClick={toggleThread}
+          />}
         <Box
-        className="scrollable-container" 
-        sx={{
-          ml: { xl: "auto", xs: "auto" },
-          mr: { xl: "auto", xs: "auto" },
-          height: "auto",
-          width: { xl: "62%", xs: "95%" },
-          mt: "10px",
-          position: "sticky",
-          zIndex: "5",
-          display: "flex",
-          flexDirection: "column",
-          overflowY:"auto",
-        }}>
-          {staticChats.map((chat) => {
+          className="scrollable-container"
+          sx={{
+            ml: { xl: "auto", xs: "auto" },
+            mr: { xl: "auto", xs: "auto" },
+            height: "auto",
+            width: { xl: "62%", xs: "95%" },
+            mt: "10px",
+            position: "sticky",
+            zIndex: "5",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
+          }}>
+          {chats.map((chat) => {
             return (
-              <ChatItem role={chat.role} content={chat.content}/>
+              // @ts-ignore
+              <ChatItem key={chat._id} role={chat.role} content={chat.content} />
             )
           })}
         </Box>
-        <Box sx={{
-          ml: { xl: "auto", xs: "auto" },
-          mr: { xl: "auto", xs: "auto" },
-          height: "65px",
-          width: { xl: "60%", xs: "80%" },
-          background: "#333333",
-          mt: "auto",
-          mb: "25px",
-          borderRadius: "20px",
-          border: "3px solid grey",
-          position: "sticky",
-          zIndex: "5",
-          display: "flex",
-          alignItems: "center"
-        }}>
+        <Box
+          zIndex={5}
+          sx={{
+            ml: { xl: 'auto', xs: 'auto' },
+            mr: { xl: 'auto', xs: 'auto' },
+            minHeight: "70px",
+            height: `120px`,
+            width: { xl: '60%', xs: '80%' },
+            background: '#333333',
+            mb: '25px',
+            borderRadius: '20px',
+            border: '3px solid grey',
+            position: 'sticky',
+            zIndex: 5,
+            display: 'flex',
+            alignItems: 'center',
+            overflow: 'hidden',
+            '&::-webkit-scrollbar': {
+              width: 0,
+            },
+          }}
+        >
           <TextField
             id="standard-basic"
-            placeholder='Ask a question'
+            placeholder="Ask a question"
             variant="standard"
+            multiline
+            maxRows={Infinity}
+            fullWidth
+            inputRef={inputRef}
             sx={{
-              width: "98%", ml: "20px", mr: "10px", mt:"3px",
-              color: "white",
+              width: '98%',
+              ml: '20px',
+              mr: '10px',
+              color: 'white',
+              maxHeight: '65px',
+              overflowY: 'auto',
               '& .MuiInputBase-input': {
+                height: 'auto',
                 fontSize: '20px',
                 color: 'white',
                 textDecoration: 'none',
@@ -150,13 +185,28 @@ const Chat = () => {
               '& .MuiInput-underline:after': {
                 borderBottom: 'none',
               },
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+              '&::-moz-scrollbar': {
+                display: 'none',
+              },
             }}
           />
-          <div onClick={toggleThread}>
-            <ArrowForwardRoundedIcon fontSize='large' sx={{ mr: "10px", transition: 'transform 300ms ease-in-out', mt: "10px", '&:hover': {
-              transform: 'translateX(1px)',
-              cursor: "pointer",
-            }, }} />
+          <div onClick={submitHandler}>
+            <ArrowForwardRoundedIcon
+              fontSize="large"
+              sx={{
+                mr: '10px',
+                justifySelf: 'center',
+                transition: 'transform 300ms ease-in-out',
+                mt: '10px',
+                '&:hover': {
+                  transform: 'translateX(1px)',
+                  cursor: 'pointer',
+                },
+              }}
+            />
           </div>
         </Box>
       </Box>

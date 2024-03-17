@@ -16,7 +16,7 @@ function Signup() {
   useEffect(() => {
     if (actionResponse && actionResponse.status === 201) {
       let userData = actionResponse.data.user
-      dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats }))
       toast.success("Signup Successful.")
       navigate('/')
     }
@@ -86,7 +86,6 @@ let SignupAction: ActionFunction = async ({ request }) => {
     email: userData.get('email'),
     password: userData.get('password')
   }
-  console.log(user)
 
   try {
     let response: AxiosResponse = await axios.post('http://localhost:8080/user/signup', user, { withCredentials: true })

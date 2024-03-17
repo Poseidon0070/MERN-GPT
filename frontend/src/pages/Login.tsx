@@ -13,7 +13,7 @@ function Login() {
   useEffect(() => {
     if (actionResponse && actionResponse.status === 201) {
       let userData = actionResponse.data.user
-      dispatch(userActions.login({ name: userData.name, email: userData.email }))
+      dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats }))
       toast.success("Login Successful")
       navigate('/')
     }
@@ -78,7 +78,6 @@ let loginAction: ActionFunction = async ({ request }) => {
     email: userData.get('email'),
     password: userData.get('password')
   }
-  console.log(user)
 
   try {
     let response: AxiosResponse = await axios.post('http://localhost:8080/user/login', user, { withCredentials: true })

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import User from "../models/user.js";
 import { options } from "../utils/openai-config.js";
 import { G4F } from "g4f";
+
 export const generateChatCompletion = async (
   req: Request,
   res: Response,
