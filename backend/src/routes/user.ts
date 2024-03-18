@@ -10,6 +10,7 @@ userRouter.get('/', getAllUsers)
 userRouter.post('/signup',validateSignup, validationRequestSchama, userSignup)
 userRouter.post('/login',validateLogin, validationRequestSchama, userLogin)
 userRouter.get('/verify',verifyToken, verifyUser)
+
 userRouter.get('/logout',logoutUser)
 
 export default userRouter

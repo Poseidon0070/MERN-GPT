@@ -1,20 +1,27 @@
-import mongoose from "mongoose";
-import chatSchema from "./chat.js";
+import mongoose, { Document } from "mongoose";
+import chatSchema, { chatType } from "./chat.js";
+
+export interface SavedUser extends Document {
+    name: string,
+    email: string,
+    password: string,
+    chats: chatType[] | [] 
+}
 
 const userSchema = new mongoose.Schema({
-    name : {
-        type : String,
-        require : true
+    name: {
+        type: String,
+        required: true
     },
-    email : {
-        type : String,
-        require : true 
+    email: {
+        type: String, 
+        required: true 
     },
-    password : {
-        type : String,
-        require : true
+    password: {
+        type: String,
+        required: true
     },
-    chats : [chatSchema]
-})
+    chats: [chatSchema]
+});
 
-export default mongoose.model("User",userSchema);
+export default mongoose.model<SavedUser>("User", userSchema);

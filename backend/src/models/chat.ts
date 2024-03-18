@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+interface chatType {
+    role: "user" | "assistant";
+    content: string;
+}
+
+
 const chatSchema = new mongoose.Schema({
     id: {
         type: String,
@@ -15,3 +21,5 @@ const chatSchema = new mongoose.Schema({
 })
 
 export default chatSchema
+
+export {chatType}

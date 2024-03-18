@@ -88,7 +88,6 @@ button i::after {
 }
 
 button:hover i::after {
-  width: 15px;
   left: 80%;
   animation: move 3s infinite;
 }

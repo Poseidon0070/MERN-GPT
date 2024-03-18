@@ -28,7 +28,7 @@ function parseData(data: any) {
 
 
 function isCodeBlock(str: string) {
-    return ((str.includes("=") || str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")))
+    return ((str.includes("=") || str.includes("#") ||  str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")))
 }
 
 const ChatItem = ({ content, role }: { content: string, role: string }) => {
@@ -67,7 +67,7 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
                         messageBlocks.length &&
                         messageBlocks.map((block, index) =>
                             isCodeBlock(block) ? (
-                                <Box sx={{ my: "15px" }} key={index}>
+                                <Box sx={{ my: "15px", fontSize: "20px" }} key={index}>
                                     <SyntaxHighlighter key={index} style={atomDark} language="javascript">
                                         {block}
                                     </SyntaxHighlighter>

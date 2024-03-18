@@ -8,25 +8,25 @@ import Chat from './pages/Chat'
 import MainNavigation from './components/MainNavigation'
 import { useEffect } from 'react'
 import axios from 'axios'
-import { useAppDispatch } from './store/exporter'
+import { useAppDispatch, useAppSelector } from './store/exporter'
 import { userActions } from './store/store'
 
 function App() {
     let dispatch = useAppDispatch()
+    let isLoggedIn = useAppSelector(state => state.isLoggedIn)
     useEffect(() => {
         const verifyUser = async () => {
           try {
             const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
             if(response){
                 let userData = response.data.user
-                // console.log(userData.chats)
                 dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats}))
             }
           } catch (error) {
             console.log(error)
+            return ;
           }
         };
-    
         verifyUser();
      }, []);
 
@@ -39,7 +39,7 @@ function App() {
                 {path: '' , element : <Home />}, 
                 {path : 'login', element : <Login />, action: loginAction}, 
                 {path : 'signup', element : <Signup />, action: SignupAction},
-                {path : 'chat', element : <Chat />} 
+                { path: 'chat', element: isLoggedIn ? <Chat /> : <Error /> } 
             ]
         },
     ])

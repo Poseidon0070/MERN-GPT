@@ -80,7 +80,6 @@ const verifyUser = async(req : Request, res : Response) => {
         if(user._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Unauthorized Access.")
         }else{
-            console.log(user)
             return res.status(200).json({user:user})
         }
     }catch(err){
@@ -96,5 +95,7 @@ const logoutUser = async(req : Request, res : Response) => {
         return res.status(500).json({ err:err });
     }
 }
+
+
 
 export {getAllUsers, userSignup, userLogin, verifyUser, logoutUser}  

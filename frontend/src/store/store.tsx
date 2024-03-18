@@ -38,6 +38,9 @@ let userAuth = createSlice({
                 role : action.payload.role,
                 content : action.payload.message
             })
+        },
+        deleteChat : (state: UserState) => {
+            state.chats=[]
         }
     }
 })

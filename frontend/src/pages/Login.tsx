@@ -1,16 +1,24 @@
 import { ActionFunction, Form, Link, useActionData, useNavigate } from "react-router-dom"
 import Animation from "../components/Animation"
 import axios, { AxiosResponse } from "axios";
-import { useAppDispatch } from "../store/exporter";
+import { useAppDispatch, useAppSelector } from "../store/exporter";
 import { useEffect } from "react";
 import { userActions } from "../store/store";
 import { toast } from "sonner";
 
 function Login() {
   let actionResponse: any = useActionData()
-  let navigate = useNavigate()
   let dispatch = useAppDispatch()
+  let isLoggedIn = useAppSelector(state => state.isLoggedIn);
+  let navigate = useNavigate()
+
   useEffect(() => {
+    if(isLoggedIn) {
+      console.log("here")
+      toast.info('You are already logged in')
+      navigate('/chat')
+      return ;
+    }
     if (actionResponse && actionResponse.status === 201) {
       let userData = actionResponse.data.user
       dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats }))
@@ -20,7 +28,7 @@ function Login() {
     else if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
       toast.error('Invalid credentials! Please retry.')
     }
-  }, [actionResponse, dispatch, navigate])
+  }, [isLoggedIn,actionResponse, dispatch, navigate])
   return (
     <div className="container">
       <div>

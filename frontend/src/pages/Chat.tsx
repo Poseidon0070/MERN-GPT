@@ -5,16 +5,30 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import ChatItem from '../components/ChatItem';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 import { useAppSelector, useAppDispatch } from '../store/exporter';
 import { userActions } from '../store/store';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 
-const Chat = () => {
+const Chat = () : ReactNode => {
+  let isLoggedIn = useAppSelector(state => state.isLoggedIn);
+  let navigate = useNavigate()
+  
+  useEffect(() => {
+    if(!isLoggedIn) {
+      console.log("here")
+      navigate('/login')
+      toast.info('Please loggin to access chat')
+      return ;
+    }
+  }, [isLoggedIn])
+
   const [isThreadOpen, setIsThreadOpen] = useState<boolean>(true);
   const toggleThread = () => {
     setIsThreadOpen(prevState => !prevState);
@@ -45,14 +59,34 @@ const Chat = () => {
     if(inputRef.current){
       let content = inputRef.current?.value 
       if(content === "") return ;
-      dispatch(userActions.setChats({role : "user", message : content}))
-      const res = await axios.post("http://localhost:8080/chat/new", { message : content }, {withCredentials:true});
-      if (res.status !== 200) {
-        throw new Error("Unable to send chat");
+      try{
+        dispatch(userActions.setChats({role : "user", message : content}))
+        const res = await axios.post("http://localhost:8080/chat/new", { message : content }, {withCredentials:true})
+        if (res.status !== 200) {
+          throw new Error("Unable to send chat");
+        }
+        const data = await res.data;
+        console.log(data.response)
+        dispatch(userActions.setChats({role : "assistant", message : data.response}))
+      }catch(err){
+        console.log(err)
+        toast.error("Some error occured. Cannot load chats!")
       }
-      const data = await res.data;
-      console.log(data.response)
-      dispatch(userActions.setChats({role : "assistant", message : data.response}))
+    }
+  }
+
+  let deleteHandler = async() => {
+    if(chats.length === 0) return ;
+    try{
+      const res = await axios.delete("http://localhost:8080/chat/deleteChat", {withCredentials:true})
+      if (res.status !== 200) {
+        throw new Error("Unable to delete chat");
+      }
+      dispatch(userActions.deleteChat())
+      toast.success("Chats deleted successfully!")
+    }catch(err){
+      console.log(err)
+      toast.error("Chat deletion failed!")
     }
   }
 
@@ -106,7 +140,8 @@ const Chat = () => {
               transform: 'scale(1.03)',
               cursor: "pointer",
             },
-          }}>
+          }}
+          onClick={deleteHandler}>
             <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center", mt: "10px" }}>
               <DeleteOutlinedIcon fontSize="large" />
               <span>Delete History</span>
@@ -134,7 +169,7 @@ const Chat = () => {
           sx={{
             ml: { xl: "auto", xs: "auto" },
             mr: { xl: "auto", xs: "auto" },
-            height: "auto",
+            height: "1000px",
             width: { xl: "62%", xs: "95%" },
             mt: "10px",
             position: "sticky",
@@ -156,13 +191,12 @@ const Chat = () => {
             ml: { xl: 'auto', xs: 'auto' },
             mr: { xl: 'auto', xs: 'auto' },
             minHeight: "70px",
-            height: `120px`,
+            height: `80px`,
             width: { xl: '60%', xs: '80%' },
             background: '#333333',
             mb: '25px',
             borderRadius: '20px',
             border: '3px solid grey',
-            position: 'sticky',
             zIndex: 5,
             display: 'flex',
             alignItems: 'center',
