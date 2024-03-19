@@ -13,7 +13,7 @@ const Image = () => {
     const handleChange = (event: any) => {
         setProvider(event.target.value);
     };
-
+    // new 
     return (
         <Box sx={{
             height: "90vh",
@@ -108,7 +108,6 @@ const Image = () => {
                             />
                         </div>
                     </Box>
-
                     <Box sx={{ textAlign: "center" }}>
                         <Typography sx={{ fontSize: "15px", color: "white", fontWeight: "900" }}>Select Provider</Typography>
                         <FormControl sx={{ m: 1, width: 300 }}>
