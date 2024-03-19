@@ -24,7 +24,7 @@ const Chat = () : ReactNode => {
     if(!isLoggedIn) {
       console.log("here")
       navigate('/login')
-      toast.info('Please loggin to access chat')
+      toast.info('Please login to access chat')
       return ;
     }
   }, [isLoggedIn])
@@ -95,7 +95,7 @@ const Chat = () : ReactNode => {
       {isThreadOpen && (
         <Box sx={{
           flexShrink: "1", maxWidth: "400px", flexGrow: "0.1", margin: "6px", border: "3px solid grey", backgroundColor: "#171719",
-          borderRadius: "30px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "20px", transition: "width 0.5s"
+          borderRadius: "15px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "20px", transition: "width 0.5s"
         }}>
           <Box sx={{ display: "flex" }}>
             <Box sx={{
@@ -150,7 +150,7 @@ const Chat = () : ReactNode => {
         </Box>
       )}
 
-      <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "9px", backgroundColor: "#171719", borderRadius: "30px" }}>
+      <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "6px", backgroundColor: "#171719", borderRadius: "15px" }}>
         {isThreadOpen && isScreenLargerThanLg &&  
           <ArrowBackIosNewRoundedIcon 
             fontSize='large' 

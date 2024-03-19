@@ -15,10 +15,15 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(cors({
-  origin : "http://localhost:5173",
+  origin : function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    callback(null, true);
+  },
   credentials : true
 }))
-app.use(appRouter)
+app.use(appRouter) 
 
 mongoose.connect(MONGODB_URL)
 .then(() => {

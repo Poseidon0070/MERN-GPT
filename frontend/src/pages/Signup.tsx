@@ -3,27 +3,40 @@ import type { ActionFunction } from "react-router";
 import Animation from "../components/Animation";
 import axios, { AxiosResponse } from "axios";
 import { useActionData } from "react-router-dom";
-import { useAppDispatch } from "../store/exporter";
+import { useAppDispatch, useAppSelector } from "../store/exporter";
 import { userActions } from "../store/store";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 function Signup() {
-  let actionResponse: any = useActionData()
-  let navigate = useNavigate()
-  let dispatch = useAppDispatch()
+
+  let actionResponse: any = useActionData();
+  let dispatch = useAppDispatch();
+  let isLoggedIn = useAppSelector(state => state.isLoggedIn);
+  let navigate = useNavigate();
+ 
+  // Use useRef to store the previous state of isLoggedIn
+  const prevIsLoggedInRef = useRef(isLoggedIn);
+ 
   useEffect(() => {
-    if (actionResponse && actionResponse.status === 201) {
-      let userData = actionResponse.data.user
-      dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats }))
-      toast.success("Signup Successful.")
-      navigate('/')
-    }
-    else if((actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error)){
-      toast.error('Invalid credentials! Please retry.')
-    }
-  }, [actionResponse, dispatch, navigate])
+     // Update the ref with the current isLoggedIn value
+     prevIsLoggedInRef.current = isLoggedIn;
+  }, [isLoggedIn]);
+ 
+  useEffect(() => {
+     if (actionResponse && actionResponse.status === 201 && !isLoggedIn) {
+       let userData = actionResponse.data.user;
+       dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats }));
+       console.log(userData);
+       toast.success("Signup Successful.")
+       navigate('/chat');
+       return;
+     } else if (actionResponse?.status !== 201 && (actionResponse && actionResponse.data.msg) || (actionResponse && actionResponse.data.error) && !isLoggedIn) {
+       console.log(actionResponse);
+       toast.error('Invalid credentials! Please retry....');
+     } 
+  }, [isLoggedIn, actionResponse, navigate, prevIsLoggedInRef]);
 
   return (
     <div className="container">

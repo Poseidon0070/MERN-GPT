@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useAppDispatch, useAppSelector } from './store/exporter'
 import { userActions } from './store/store'
+import Image from './pages/Image'
 
 function App() {
     let dispatch = useAppDispatch()
@@ -39,7 +40,8 @@ function App() {
                 {path: '' , element : <Home />}, 
                 {path : 'login', element : <Login />, action: loginAction}, 
                 {path : 'signup', element : <Signup />, action: SignupAction},
-                { path: 'chat', element: isLoggedIn ? <Chat /> : <Error /> } 
+                {path : 'chat', element: isLoggedIn ? <Chat /> : <Error /> }, 
+                {path : 'image', element: isLoggedIn ? <Image /> : <Image /> } 
             ]
         },
     ])

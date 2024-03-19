@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.js";
-import { options } from "../utils/openai-config.js";
+import { chatOptions } from "../utils/openai-config.js";
 import { G4F } from "g4f";
 
 export const generateChatCompletion = async (
@@ -22,7 +22,7 @@ export const generateChatCompletion = async (
     // @ts-ignore
     user.chats.push({ role: "user",content: message })
 
-    const chatResponse = await g4f.chatCompletion(chats,options);
+    const chatResponse = await g4f.chatCompletion(chats,chatOptions);
     // @ts-ignore
     user.chats.push({role:"assistant", content : chatResponse});
     await user.save();
@@ -35,7 +35,6 @@ export const generateChatCompletion = async (
 
 export const deleteChat = async(req : Request, res : Response) => {
   try{
-    console.log("............................................")
       let userId = res.locals.jwtData.id;
       let user = await User.findById(userId)
       if(!user){

@@ -17,7 +17,7 @@ const Header = () => {
       
       if(response.status === 200){
         dispatch(userActions.logout())
-        toast.success("Logged out successfull")
+        toast.success("Logout Successful.")
       }else{
         toast.error("Some error occured! Failed to logout")
           console.log(response.data)
