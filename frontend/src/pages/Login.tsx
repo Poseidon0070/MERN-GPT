@@ -5,12 +5,16 @@ import { useAppDispatch, useAppSelector } from "../store/exporter";
 import { useEffect, useRef } from "react";
 import { userActions } from "../store/store";
 import { toast } from "sonner";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 function Login() {
   let actionResponse: any = useActionData();
   let dispatch = useAppDispatch();
   let isLoggedIn = useAppSelector(state => state.isLoggedIn);
   let navigate = useNavigate();
+  let theme = useTheme()
+  const isScreenSizeGreaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
  
   // Use useRef to store the previous state of isLoggedIn
   const prevIsLoggedInRef = useRef(isLoggedIn);
@@ -40,9 +44,11 @@ function Login() {
  
   return (
     <div className="container">
-      <div>
-        <Animation />
-      </div>
+      {isScreenSizeGreaterThanMd && 
+        <div>
+          <Animation />
+        </div>
+      }
       <div className="login-box">
         <h2 className="heading-login-box">Login</h2>
         <Form method="POST"> 

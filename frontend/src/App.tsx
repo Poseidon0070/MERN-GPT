@@ -41,7 +41,7 @@ function App() {
                 {path : 'login', element : <Login />, action: loginAction}, 
                 {path : 'signup', element : <Signup />, action: SignupAction},
                 {path : 'chat', element: isLoggedIn ? <Chat /> : <Error /> }, 
-                {path : 'image', element: isLoggedIn ? <Image /> : <Image /> } 
+                {path : 'image', element: isLoggedIn ? <Image /> : <Error /> } 
             ]
         },
     ])

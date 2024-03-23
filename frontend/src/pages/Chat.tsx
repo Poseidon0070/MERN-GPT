@@ -16,16 +16,16 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 
-const Chat = () : ReactNode => {
+const Chat = (): ReactNode => {
   let isLoggedIn = useAppSelector(state => state.isLoggedIn);
   let navigate = useNavigate()
-  
+
   useEffect(() => {
-    if(!isLoggedIn) {
+    if (!isLoggedIn) {
       console.log("here")
       navigate('/login')
       toast.info('Please login to access chat')
-      return ;
+      return;
     }
   }, [isLoggedIn])
 
@@ -54,48 +54,59 @@ const Chat = () : ReactNode => {
     }
   };
 
-  let submitHandler = async() => {
+  let submitHandler = async () => {
 
-    if(inputRef.current){
-      let content = inputRef.current?.value 
-      if(content === "") return ;
-      try{
-        dispatch(userActions.setChats({role : "user", message : content}))
-        const res = await axios.post("http://localhost:8080/chat/new", { message : content }, {withCredentials:true})
+    if (inputRef.current) {
+      let content = inputRef.current?.value
+      if (content === "") return;
+      try {
+        dispatch(userActions.setChats({ role: "user", message: content }))
+        const res = await axios.post("http://localhost:8080/chat/new", { message: content }, { withCredentials: true })
         if (res.status !== 200) {
           throw new Error("Unable to send chat");
         }
         const data = await res.data;
         console.log(data.response)
-        dispatch(userActions.setChats({role : "assistant", message : data.response}))
-      }catch(err){
+        dispatch(userActions.setChats({ role: "assistant", message: data.response }))
+      } catch (err) {
         console.log(err)
         toast.error("Some error occured. Cannot load chats!")
       }
     }
   }
 
-  let deleteHandler = async() => {
-    if(chats.length === 0) return ;
-    try{
-      const res = await axios.delete("http://localhost:8080/chat/deleteChat", {withCredentials:true})
+  let deleteHandler = async () => {
+    if (chats.length === 0) return;
+    try {
+      const res = await axios.delete("http://localhost:8080/chat/deleteChat", { withCredentials: true })
       if (res.status !== 200) {
         throw new Error("Unable to delete chat");
       }
       dispatch(userActions.deleteChat())
       toast.success("Chats deleted successfully!")
-    }catch(err){
+    } catch (err) {
       console.log(err)
       toast.error("Chat deletion failed!")
     }
   }
 
+
+  // Function to scroll to a specific chat
+  const scrollToChat = (chatId: string) => {
+    const chatElement = document.getElementById(`chat-${chatId}`);
+    if (chatElement) {
+      chatElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+
+
   return (
-    <Box sx={{ display: "flex", flex: "1", width: "100vw" }}>
+    <Box sx={{ display: "flex", flex: "1", width: "100vw", opacity:"0.9" }}>
       {isThreadOpen && (
         <Box sx={{
           flexShrink: "1", maxWidth: "400px", flexGrow: "0.1", margin: "6px", border: "3px solid grey", backgroundColor: "#171719",
-          borderRadius: "15px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "20px", transition: "width 0.5s"
+          borderRadius: "15px", display: { lg: "flex", xs: "none" }, flexDirection: "column", padding: "10px", py: "20px  ", transition: "width 0.5s"
         }}>
           <Box sx={{ display: "flex" }}>
             <Box sx={{
@@ -105,10 +116,16 @@ const Chat = () : ReactNode => {
                 cursor: "pointer",
               },
             }}>
-              <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center" }}>
-                <ChatBubbleOutlineIcon fontSize="large" sx={{ mr: "8px", ml: "5px" }} />
-                <span>New Thread</span>
-              </Typography>
+              <Box 
+              onClick={() => {
+                inputRef.current?.focus()
+                scrollToBottom()
+              }}>
+                <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center" }} >
+                  <ChatBubbleOutlineIcon fontSize="large" sx={{ mr: "8px", ml: "5px" }} />
+                  <span>New Chat</span>
+                </Typography>
+              </Box>
             </Box>
             <ClearRoundedIcon fontSize="medium" sx={{
               ml: "auto", transition: 'transform 300ms ease-in-out',
@@ -118,18 +135,57 @@ const Chat = () : ReactNode => {
               },
             }} onClick={toggleThread} />
           </Box>
-          <Box sx={{
-            mt: "10px",
-            height: "95%",
-            display: "flex",
-            flexDirection: "column",
-            boxSizing: "border-box",
-            width: "100%",
-            wordWrap: "break-word",
-            overflowY: "overlay",
-            scrollBehavior: "smooth"
-          }}>
+          <Box
+            sx={{
+              mt: "20px",
+              height: "76vh",
+              display: "flex",
+              flexDirection: "column",
+              boxSizing: "border-box",
+              paddingX: "5px",
+              width: "100%",
+              wordWrap: "break-word",
+              scrollBehavior: "smooth",
+              overflowY: "hidden", 
+              "&:hover": {
+                overflowY: "overlay", 
+              },
+            }}
+          >
+            {
+              chats.map((chat) => (
+                // Check if chat.role is "user" before rendering
+                chat.role === "user" && (
+                  // @ts-ignore
+                  <Box key={chat._id} onClick={() => scrollToChat(chat._id)}>
+                    <Typography
+                      sx={{
+                        fontSize: "20px",
+                        fontFamily: "monospace",
+                        mb: "15px",
+                        background: "#333333",
+                        px: "12px",
+                        py: "10px",
+                        borderRadius: "10px",
+                        overflowX: "hidden",
+                        transition: "transform 300ms ease-in-out",
+                        '&:hover': {
+                          transform: "scale(1.02)",
+                          cursor: "pointer",
+                        }
+                      }}
+                    >
+                      {chat.content.length > 28
+                        ? chat.content.slice(0, 28) + '...'
+                        : chat.content.slice(0, 30)}
+                    </Typography>
+                  </Box>
+                )
+              ))
+            }
           </Box>
+
+
           <Box sx={{
             mt: "auto",
             transition: 'transform 300ms ease-in-out',
@@ -141,7 +197,7 @@ const Chat = () : ReactNode => {
               cursor: "pointer",
             },
           }}
-          onClick={deleteHandler}>
+            onClick={deleteHandler}>
             <Typography variant='h6' sx={{ display: "flex", flexDirection: "row", textAlign: "center", mt: "10px" }}>
               <DeleteOutlinedIcon fontSize="large" />
               <span>Delete History</span>
@@ -151,21 +207,21 @@ const Chat = () : ReactNode => {
       )}
 
       <Box sx={{ display: "flex", overflowY: "overlay", height: "89vh", flexDirection: "column", border: "3px solid grey", flex: "1", margin: "6px", backgroundColor: "#171719", borderRadius: "15px" }}>
-        {isThreadOpen && isScreenLargerThanLg &&  
-          <ArrowBackIosNewRoundedIcon 
-            fontSize='large' 
-            sx={{position:"relative", top:"50%"}}  
+        {isThreadOpen && isScreenLargerThanLg &&
+          <ArrowBackIosNewRoundedIcon
+            fontSize='large'
+            sx={{ position: "relative", top: "50%" }}
             onClick={toggleThread}
           />}
-        {!isThreadOpen && isScreenLargerThanLg &&  
-          <ArrowForwardIosRoundedIcon 
-            fontSize='large' 
-            sx={{position:"relative", top:"50%"}}  
+        {!isThreadOpen && isScreenLargerThanLg &&
+          <ArrowForwardIosRoundedIcon
+            fontSize='large'
+            sx={{ position: "relative", top: "50%" }}
             onClick={toggleThread}
           />}
         <Box
           className="scrollable-container"
-          ref={chatContainerRef }
+          ref={chatContainerRef}
           sx={{
             ml: { xl: "auto", xs: "auto" },
             mr: { xl: "auto", xs: "auto" },
@@ -181,7 +237,9 @@ const Chat = () : ReactNode => {
           {chats.map((chat) => {
             return (
               // @ts-ignore
-              <ChatItem key={chat._id} role={chat.role} content={chat.content} />
+              <Box key={chat._id} id={`chat-${chat._id}`}>
+                <ChatItem role={chat.role} content={chat.content} />
+              </Box>
             )
           })}
         </Box>

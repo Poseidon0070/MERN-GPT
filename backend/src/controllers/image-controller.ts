@@ -8,13 +8,14 @@ export const generateImage = async (
     res: Response,
     next: NextFunction
 ) => {
+    console.log('--------------------------')
     try{
-        let image = req.params.imageName
+        let imagePrompt: string = req.query.image as string;
+        let provider: string = req.query.provider as string;
         let g4f = new G4F()
-        console.log(image)
-        const base64Image = await g4f.imageGeneration(image, { 
+        const base64Image = await g4f.imageGeneration(imagePrompt, { 
             debug: true,
-            provider: g4f.providers.Prodia,
+            provider: g4f.providers[provider],
             providerOptions: {
                 height: 1024,
                 width: 1024,
@@ -25,5 +26,5 @@ export const generateImage = async (
     }catch(err){
         console.log(err)
         res.status(500).json({error : err})
-    }
+    }   
 }

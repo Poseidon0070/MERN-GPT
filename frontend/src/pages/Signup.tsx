@@ -8,6 +8,7 @@ import { userActions } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 function Signup() {
 
@@ -15,6 +16,9 @@ function Signup() {
   let dispatch = useAppDispatch();
   let isLoggedIn = useAppSelector(state => state.isLoggedIn);
   let navigate = useNavigate();
+
+  let theme = useTheme()
+  const isScreenSizeGreaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
  
   // Use useRef to store the previous state of isLoggedIn
   const prevIsLoggedInRef = useRef(isLoggedIn);
@@ -40,9 +44,11 @@ function Signup() {
 
   return (
     <div className="container">
-      <div>
-        <Animation />
-      </div>
+      {isScreenSizeGreaterThanMd && 
+        <div>
+          <Animation />
+        </div>
+      }
       <div className="login-box">
         <h2 className="heading-login-box">Signup</h2>
         <Form method="POST">

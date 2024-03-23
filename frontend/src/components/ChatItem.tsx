@@ -1,6 +1,6 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {  atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useAppSelector } from "../store/exporter";
 
 function extractCodeFromString(message: string) {
@@ -28,7 +28,7 @@ function parseData(data: any) {
 
 
 function isCodeBlock(str: string) {
-    return ((str.includes("=") || str.includes("#") ||  str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")))
+    return ((str.includes("=") || str.includes("#") || str.includes(";") || str.includes("[") || str.includes("]") || str.includes("{") || str.includes("}") || str.includes("//")))
 }
 
 const ChatItem = ({ content, role }: { content: string, role: string }) => {
@@ -57,23 +57,25 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
             </Box>
             <Box sx={{ mt: "-15px" }}>
                 {!messageBlocks && (
-                    parseData(content).map((block: string) => {
-                        return <Typography sx={{ fontSize: "18px", ml: "50px" }}>{block}</Typography>
+                    parseData(content).map((block: string, index: number) => {
+                        return <Typography sx={{ fontSize: "18px", ml: "50px" }} key={index}>{block}</Typography>
                     })
 
                 )}
                 <Box sx={{ ml: "50px" }}>
                     {messageBlocks &&
                         messageBlocks.length &&
-                        messageBlocks.map((block, index) =>
+                        messageBlocks.map((block: string, index: number) =>
                             isCodeBlock(block) ? (
-                                <Box sx={{ my: "15px", fontSize: "20px" }} key={index}>
-                                    <SyntaxHighlighter key={index} style={atomDark} language="javascript">
+                                <Box sx={{ my: "15px", fontSize:"18px" }} key={index}> {/* Add key here */}
+                                    <SyntaxHighlighter style={atomDark} language="javascript">
                                         {block}
                                     </SyntaxHighlighter>
                                 </Box>
                             ) : (
-                                <Typography key={index} sx={{ fontSize: "18px" }}>{block}</Typography>
+                                <Typography sx={{ fontSize: "18px" }} key={index}> {/* Add key here */}
+                                    {block}
+                                </Typography>
                             )
                         )}
                 </Box>
@@ -92,8 +94,10 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
         >
             <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box sx={{ textAlign: "center" }}>
-                    <Avatar sx={{ height: "40px", width: "40px", fontSize:"25px", color: "white", backgroundColor: "#76453B",
-                    display:"flex", justifyContent:"center", alignItems:"center" }}>
+                    <Avatar sx={{
+                        height: "40px", width: "40px", fontSize: "25px", color: "white", backgroundColor: "#76453B",
+                        display: "flex", justifyContent: "center", alignItems: "center"
+                    }}>
                         <div>{userData.name[0]}</div>
                     </Avatar>
                 </Box>
@@ -110,7 +114,7 @@ const ChatItem = ({ content, role }: { content: string, role: string }) => {
                     messageBlocks.map((block, index) =>
                         isCodeBlock(block) ? (
                             <Box sx={{ my: "15px" }} key={index}>
-                                <SyntaxHighlighter key={index} style={atomDark} language="javascript">
+                                <SyntaxHighlighter style={atomDark} language="javascript">
                                     {block}
                                 </SyntaxHighlighter>
                             </Box>

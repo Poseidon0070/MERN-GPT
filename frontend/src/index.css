@@ -3,11 +3,23 @@
 body {
   margin: 0px;
   padding: 0px;
-  background-color: 
-  #2f2f2f;
   font-family: 'Roboto Slab', sans-serif;
   color: white;
 }
+
+video {
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  min-width: 100%; 
+  min-height: 100%; 
+  width: auto; 
+  height: auto;
+  z-index: -1; 
+  transform: translate(-50%, -50%);
+  opacity:0.85;
+}
+
 
 .logo {
   display: flex;
@@ -113,7 +125,7 @@ button:hover i::after {
   width: 350px;
   padding: 50px;
   /* transform: translate(-50%, -50%); */
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   box-shadow: 5px 5px 15px -1px black;
 }
@@ -311,7 +323,7 @@ button:hover i::after {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #2f2f2f;
+  background: transparent;
   overflow: hidden;
 }
 .eva{
@@ -574,3 +586,13 @@ button:hover i::after {
 ::-moz-scrollbar-thumb:hover {
   background: #555;
 }
+
+.active p{
+  text-decoration: underline;
+  text-decoration-thickness: px;
+}
+
+.partial-transparent image{
+  opacity: 0.9;
+}
+

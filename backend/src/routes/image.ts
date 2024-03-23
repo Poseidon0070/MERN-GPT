@@ -5,6 +5,6 @@ import { generateImage } from "../controllers/image-controller.js";
 const imageRouter = Router()
 
 // chatRouter.post('/new', verifyToken, generateChatCompletion)
-imageRouter.get('/image',verifyToken, generateImage)
+imageRouter.get('/',verifyToken, generateImage)
 
 export default imageRouter
