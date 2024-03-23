@@ -31,7 +31,7 @@ mongoose.connect(MONGODB_URL)
     console.log(`Server live at http://localhost:${PORT}`) 
   }) 
 })
-.catch(err => {
+.catch(err => { 
   console.log(err)
   throw new Error(err)
 }) 

@@ -5,7 +5,6 @@ import { verifyUser } from "../controllers/user-controller.js";
 
 const chatRouter = Router()
 
-// chatRouter.post('/new', verifyToken, generateChatCompletion)
 chatRouter.post('/new',verifyToken, generateChatCompletion)
 chatRouter.delete('/deleteChat',verifyToken, deleteChat)
 
