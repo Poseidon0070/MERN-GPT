@@ -14,21 +14,21 @@ const MONGODB_URL = process.env.MONGODB_URL
 app.use(express.json())
 app.use(morgan("dev"))
 app.use(cookieParser(process.env.COOKIE_SECRET))
-app.use(cors({
-  origin : function (origin, callback) {
-    if (!origin) {
-      return callback(null, true);
-    }
-    callback(null, true);
+const corsOptions = {
+  origin: function (origin, callback) {
+     // Allow requests with no origin (like mobile apps or curl requests)
+     if (!origin) return callback(null, true);
+     // Specify the allowed origins
+     const allowedOrigins = ['http://localhost:5173', 'https://your-frontend-domain.com'];
+     if (allowedOrigins.includes(origin)) {
+       return callback(null, true);
+     }
+     return callback(new Error('Not allowed by CORS'));
   },
-  credentials : true
-}))
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+  credentials: true,
+ };
+ 
+ app.use(cors(corsOptions));
 app.use(appRouter) 
 
 mongoose.connect(MONGODB_URL)

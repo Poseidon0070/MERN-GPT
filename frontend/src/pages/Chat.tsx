@@ -61,7 +61,7 @@ const Chat = (): ReactNode => {
       if (content === "") return;
       try {
         dispatch(userActions.setChats({ role: "user", message: content }))
-        const res = await axios.post("http://localhost:8080/chat/new", { message: content }, { withCredentials: true })
+        const res = await axios.post("https://mern-gpt-2.onrender.com/chat/new", { message: content }, { withCredentials: true })
         if (res.status !== 200) {
           throw new Error("Unable to send chat");
         }
@@ -78,7 +78,7 @@ const Chat = (): ReactNode => {
   let deleteHandler = async () => {
     if (chats.length === 0) return;
     try {
-      const res = await axios.delete("http://localhost:8080/chat/deleteChat", { withCredentials: true })
+      const res = await axios.delete("https://mern-gpt-2.onrender.com/chat/deleteChat", { withCredentials: true })
       if (res.status !== 200) {
         throw new Error("Unable to delete chat");
       }
