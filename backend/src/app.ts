@@ -19,7 +19,7 @@ const corsOptions = {
      // Allow requests with no origin (like mobile apps or curl requests)
      if (!origin) return callback(null, true);
      // Specify the allowed origins
-     const allowedOrigins = ['http://localhost:5173', 'https://your-frontend-domain.com'];
+     const allowedOrigins = ['https://poseidon0070.github.io', 'https://shikharreyya.is-a.dev'];
      if (allowedOrigins.includes(origin)) {
        return callback(null, true);
      }
