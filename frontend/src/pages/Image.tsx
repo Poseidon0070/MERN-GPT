@@ -1,24 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, FormControl, MenuItem, Select, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, FormControl, MenuItem, Select, TextField, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import dummy from '../assets/dummy.jpg'
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useAppDispatch, useAppSelector } from '../store/exporter';
+import { userActions } from '../store/store';
 
 
 const Image = () => {
     const providers = ['Pixart', 'PixartLCM', 'Prodia', 'ProdiaStableDiffusion', 'ProdiaStableDiffusionXL', 'Dalle', 'Dalle2', 'DalleMini'];
     const [imageSrc, setImageSrc] = useState(dummy);
 
-    // useEffect(() => {
-    //     if (image) {
-    //         console.log(image)
-    //         console.log("--x----x--------x----------x----------x-----x-------x------")
-    //         setImageSrc(`data:image/jpeg;base64,${image}`);
-    //     } else {
-    //         setImageSrc(dummy);
-    //     }
-    // }, [image]);
     const [selectedProvider, setProvider] = useState('Pixart');
     let inputRef = useRef<HTMLInputElement>()
     let theme = useTheme()
@@ -28,6 +21,9 @@ const Image = () => {
         setProvider(event.target.value);
     };
 
+    let isLoading = useAppSelector(state => state.isLoading)
+    let dispatch = useAppDispatch()
+
     let imageSubmitHandler = async (e: any) => {
         e.preventDefault()
         try {
@@ -35,16 +31,18 @@ const Image = () => {
                 toast.info("Please enter your prompt!")
                 return;
             }
+            dispatch(userActions.setIsLoading(true))
             let queryParam = {
                 image: inputRef.current.value,
                 provider: selectedProvider
             }
             setImageSrc(dummy)
-            let response = await axios.get('https://mern-gpt-2.onrender.com/image', {
+            
+            let response = await axios.get('http://localhost:8080/image', {
                 withCredentials: true,
                 params: queryParam
             })
-
+            dispatch(userActions.setIsLoading(false))
             if (response.status !== 200) {
                 setImageSrc(dummy)
             } else {
@@ -56,6 +54,7 @@ const Image = () => {
         } catch (err: any) {
             console.log(err)
             toast.error("Failed to generate image")
+            dispatch(userActions.setIsLoading(false))
             throw new Error(err)
         }
     }
@@ -162,6 +161,7 @@ const Image = () => {
                                 },
                             }}
                         />
+                        <Tooltip title="Generate" arrow placement="top" >
                         <div>
                             <CenterFocusStrongIcon
                                 fontSize="large"
@@ -178,6 +178,7 @@ const Image = () => {
                                 }}
                             />
                         </div>
+                        </Tooltip>
                     </Box>
                     <Box sx={{ textAlign: "center" }}>
                         <Typography sx={{ fontSize: "15px", color: "white", fontWeight: "900" }}>Select Provider</Typography>
@@ -204,9 +205,19 @@ const Image = () => {
                         </FormControl>
                     </Box>
                     <Box sx={{ display: "flex", justifyContent: "center", mt: "10px" }}>
-                        <button style={{ color: "green", backgroundColor: "green", boxShadow: "1px 1px 10px 0px lightgreen" }} onClick={imageSubmitHandler}>
-                            <span style={{ padding: "0px", height: "8px", color: "white" }}>Generate</span><i></i>
-                        </button>
+                            {
+                                isLoading ? (
+                                    <button style={{ color: "red", backgroundColor: "red", boxShadow: "1px 1px 10px 0px red" }} disabled onClick={imageSubmitHandler}>
+                                    <span style={{ padding: "0px", height: "8px", color: "white" }}>Generating...</span><i></i>
+                                    </button>
+
+                                ) : (
+                                    <button style={{ color: "green", backgroundColor: "green", boxShadow: "1px 1px 10px 0px lightgreen" }} onClick={imageSubmitHandler}>
+                                    <span style={{ padding: "0px", height: "8px", color: "white" }}>Generate</span><i></i>
+                                    </button>
+
+                                )
+                            }
                     </Box>
                 </form>
             </Box >

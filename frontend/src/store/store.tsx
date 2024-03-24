@@ -7,12 +7,14 @@ type Chat = {
 
 type UserState = {
     isLoggedIn: boolean;
+    isLoading: boolean;
     user: any;
     chats : Array<Chat>
 }
 
 const initialState: UserState = {
     isLoggedIn: false,
+    isLoading: false,
     user: null,
     chats : []
 };
@@ -41,6 +43,12 @@ let userAuth = createSlice({
         },
         deleteChat : (state: UserState) => {
             state.chats=[]
+        },
+        popback : (state: UserState) => {
+            state.chats.pop()
+        },
+        setIsLoading : (state: UserState, action:{payload : boolean}) => {
+            state.isLoading = action.payload
         }
     }
 })
