@@ -30,11 +30,11 @@ const userSignup = async(req : Request, res : Response) => {
         })
         await user.save()
 
-        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'netlify.app', signed:true }) 
+        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'master--mern-bot.netlify.app', signed:true, sameSite:"none" }) 
         let token = createToken(user._id.toString(), user.email)
         const expires = new Date()
         expires.setDate(expires.getDate() + 7)
-        res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'netlify.app', expires: expires, signed:true })
+        res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'master--mern-bot.netlify.app', expires: expires, signed:true, sameSite:"none" })
 
         return res.status(201).json({msg : "User Created Successfully.", user : user})
     }
@@ -57,11 +57,11 @@ const userLogin = async(req : Request, res : Response) => {
             return res.status(403).json({msg : "Incorrect email or password."})
         }
 
-        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'netlify.app', signed:true })
+        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'master--mern-bot.netlify.app', signed:true, sameSite:"none" })
         let token = createToken(ExistingUser._id.toString(), ExistingUser.email)
         const expires = new Date()
         expires.setDate(expires.getDate() + 7)
-        res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'netlify.app', expires: expires, signed:true })
+        res.cookie('auth_token', token , { httpOnly: true, path : '/', domain : 'master--mern-bot.netlify.app', expires: expires, signed:true, sameSite:"none" })
 
         return res.status(201).json({msg : "Login Successfull", user : ExistingUser})
     } catch (err) {
@@ -89,7 +89,7 @@ const verifyUser = async(req : Request, res : Response) => {
 
 const logoutUser = async(req : Request, res : Response) => {
     try{
-        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'netlify.app', signed:true })
+        res.clearCookie("auth_token", { httpOnly: true, path : '/', domain : 'master--mern-bot.master--mern-bot.netlify.app', signed:true, sameSite:"none" })
         return res.status(200).json( { msg:"Logged out successfully" });
     }catch(err){
         return res.status(500).json({ err:err });
