@@ -38,7 +38,7 @@ const Image = () => {
             }
             setImageSrc(dummy)
             
-            let response = await axios.get('http://localhost:8080/image', {
+            let response = await axios.get('https://mern-gpt-2.onrender.com/image', {
                 withCredentials: true,
                 params: queryParam
             })
