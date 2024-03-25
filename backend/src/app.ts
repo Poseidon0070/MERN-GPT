@@ -13,6 +13,7 @@ const MONGODB_URL = process.env.MONGODB_URL
 
 app.use(express.json())
 app.use(morgan("dev"))
+app.set("trust proxy", 1)
 app.use(cookieParser(process.env.COOKIE_SECRET))
 const corsOptions = {
   origin: function (origin, callback) {
