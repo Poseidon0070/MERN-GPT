@@ -24,7 +24,7 @@ const Header = () => {
 
   let logoutHandler = async () => {
     try {
-      let response = await axios.get('http://localhost:5173/user/logout', { withCredentials: true })
+      let response = await axios.get('https://mern-gpt-2.onrender.com/user/logout', { withCredentials: true })
 
       if (response.status === 200) {
         dispatch(userActions.logout())
