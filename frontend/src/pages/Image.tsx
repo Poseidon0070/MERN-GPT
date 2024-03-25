@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Box, FormControl, MenuItem, Select, TextField, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import dummy from '../assets/dummy.jpg'
