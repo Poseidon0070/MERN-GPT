@@ -11,7 +11,7 @@ import axios from 'axios'
 import { useAppDispatch, useAppSelector } from './store/exporter'
 import { userActions } from './store/store'
 import Image from './pages/Image'
-
+axios.defaults.withCredentials = true;
 function App() {
     let dispatch = useAppDispatch()
     let isLoggedIn = useAppSelector(state => state.isLoggedIn)
