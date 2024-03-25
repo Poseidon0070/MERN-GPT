@@ -18,7 +18,7 @@ function App() {
     useEffect(() => {
         const verifyUser = async () => {
           try {
-            const response = await axios.get('https://mern-gpt-2.onrender.com/user/verify', {withCredentials:true});
+            const response = await axios.get('http://localhost:8080/user/verify', {withCredentials:true});
             if(response){
                 let userData = response.data.user
                 dispatch(userActions.login({ name: userData.name, email: userData.email, chats: userData.chats}))

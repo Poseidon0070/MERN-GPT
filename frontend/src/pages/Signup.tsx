@@ -107,7 +107,8 @@ let SignupAction: ActionFunction = async ({ request }) => {
   }
 
   try {
-    let response: AxiosResponse = await axios.post('https://mern-gpt-2.onrender.com/user/signup', user, { withCredentials: true })
+    let response: AxiosResponse = await axios.post('http://localhost:8080/user/signup', user, { withCredentials: true })
+    // let response: AxiosResponse = await axios.post('https://mern-gpt-2.onrender.com/user/signup', user, { withCredentials: true })
     return response
 
   } catch (err: any) {
