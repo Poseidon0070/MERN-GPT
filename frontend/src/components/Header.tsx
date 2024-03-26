@@ -55,6 +55,7 @@ const Header = () => {
   const handleNavbarClose = () => {
     setnavbar(null);
   }
+  
   return (
 
     <AppBar sx={{ bgcolor: "transparent", position: "static", boxShadow: "none" }}>
