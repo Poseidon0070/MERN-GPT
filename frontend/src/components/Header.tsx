@@ -58,7 +58,7 @@ const Header = () => {
   
   return (
 
-    <AppBar sx={{ bgcolor: "transparent", position: "static", boxShadow: "none" }}>
+    <AppBar sx={{ bgcolor: "transparent", position: "static", boxShadow: "none", height:"9vh" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Logo />
         {isLoggedIn &&

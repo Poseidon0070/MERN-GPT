@@ -6,7 +6,9 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../store/exporter';
 import { userActions } from '../store/store';
-
+import { TypeAnimation } from 'react-type-animation';
+import { saveAs } from 'file-saver'; 
+import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded';
 
 const Image = () => {
     const providers = ['Pixart', 'PixartLCM', 'Prodia', 'ProdiaStableDiffusion', 'ProdiaStableDiffusionXL', 'Dalle', 'Dalle2', 'DalleMini'];
@@ -37,7 +39,7 @@ const Image = () => {
                 provider: selectedProvider
             }
             setImageSrc(dummy)
-            
+
             let response = await axios.get('https://mern-gpt-2.onrender.com/image', {
                 withCredentials: true,
                 params: queryParam
@@ -58,13 +60,33 @@ const Image = () => {
             throw new Error(err)
         }
     }
+
+    const downloadImage = () => {
+        // Assuming imageSrc is a base64 string
+        if(imageSrc === dummy){
+            console.log("here")
+            return ;
+        }
+        const base64String = imageSrc.split(',')[1]; // Remove the data URL prefix
+        const byteCharacters = atob(base64String);
+        const byteArrays = [];
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+
+        const byteArray = new Uint8Array(byteArrays);
+        const blob = new Blob([byteArray], { type: 'image/jpeg' }); // Specify the correct MIME type
+        saveAs(blob, 'image.jpg'); // 'image.jpg' is the filename for the downloaded image
+    };
+
     // new 
     return (
         <Box
             className="partial-transparent"
             sx={{
                 height: "90vh",
-                backgroundColor: "rgba(23, 23, 25, 0.9)", 
+                backgroundColor: "rgba(23, 23, 25, 0.9)",
                 margin: "10px",
                 borderRadius: "15px",
                 border: "3px solid grey",
@@ -82,11 +104,11 @@ const Image = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     '& > img': {
-                        opacity: 1, 
+                        opacity: 1,
                         boxShadow: "2px 2px 10px 1px #FEECE2",
                     },
                     '& > div': {
-                        opacity: 0.9, 
+                        opacity: 0.9,
                     }
                 }}
             >
@@ -162,22 +184,22 @@ const Image = () => {
                             }}
                         />
                         <Tooltip title="Generate" arrow placement="top" >
-                        <div>
-                            <CenterFocusStrongIcon
-                                fontSize="large"
-                                onClick={imageSubmitHandler}
-                                sx={{
-                                    mr: '10px',
-                                    justifySelf: 'center',
-                                    transition: 'transform 300ms ease-in-out',
-                                    mt: '10px',
-                                    '&:hover': {
-                                        transform: 'scale(1.1)',
-                                        cursor: 'pointer',
-                                    },
-                                }}
-                            />
-                        </div>
+                            <div>
+                                <CenterFocusStrongIcon
+                                    fontSize="large"
+                                    onClick={isLoading ? () => {} : imageSubmitHandler}
+                                    sx={{
+                                        mr: '10px',
+                                        justifySelf: 'center',
+                                        transition: 'transform 300ms ease-in-out',
+                                        mt: '10px',
+                                        '&:hover': {
+                                            transform: 'scale(1.1)',
+                                            cursor: 'pointer',
+                                        },
+                                    }}
+                                />
+                            </div>
                         </Tooltip>
                     </Box>
                     <Box sx={{ textAlign: "center" }}>
@@ -205,19 +227,42 @@ const Image = () => {
                         </FormControl>
                     </Box>
                     <Box sx={{ display: "flex", justifyContent: "center", mt: "10px" }}>
-                            {
-                                isLoading ? (
-                                    <button style={{ color: "red", backgroundColor: "red", boxShadow: "1px 1px 10px 0px red" }} disabled onClick={imageSubmitHandler}>
-                                    <span style={{ padding: "0px", height: "8px", color: "white" }}>Generating...</span><i></i>
-                                    </button>
+                        {
+                            isLoading ? (
+                                <button style={{ color: "red", backgroundColor: "red", boxShadow: "1px 1px 10px 0px red" }} disabled onClick={imageSubmitHandler}>
+                                    <span style={{ padding: "0px", height: "8px", color: "white" }}>
+                                        <Box sx={{ position: 'relative', ml: "10px", top: 0, left: 0, right: 0, fontSize: "10px", color: "grey", bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <TypeAnimation
+                                                sequence={[
+                                                    200,
+                                                    'Hold on',
+                                                    700,
+                                                    'Hold on.',
+                                                    700,
+                                                    'Hold on..',
+                                                    700,
+                                                    'Hold on...',
+                                                    500,
+                                                ]}
+                                                speed={50}
+                                                style={{ fontSize: '2em' }}
+                                                repeat={Infinity}
+                                            />
+                                        </Box></span><i></i>
+                                </button>
 
-                                ) : (
-                                    <button style={{ color: "green", backgroundColor: "green", boxShadow: "1px 1px 10px 0px lightgreen" }} onClick={imageSubmitHandler}>
+                            ) : (
+                                <>
+                                <button style={{ color: "green", backgroundColor: "green", boxShadow: "1px 1px 10px 0px lightgreen" }} onClick={imageSubmitHandler}>
                                     <span style={{ padding: "0px", height: "8px", color: "white" }}>Generate</span><i></i>
-                                    </button>
+                                </button>
+                                <Box sx={{display:"flex", alignItems:"center", ml:"20px", bgcolor:"#333333", borderRadius:"10px", border:"3px solid grey"}}>
+                                    <FileDownloadRoundedIcon sx={{color:"white", fontSize:"40px"}} onClick={downloadImage} />
+                                </Box>
+                                </>
 
-                                )
-                            }
+                            )
+                        }
                     </Box>
                 </form>
             </Box >

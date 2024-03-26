@@ -1,10 +1,28 @@
 import { Box, Button, Typography } from '@mui/material'
 import ErrorIcon from '@mui/icons-material/Error';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/exporter';
+import { userActions } from '../store/store';
+import LinearProgress from '@mui/material/LinearProgress';
 
 const Error = () => {
   let navigate = useNavigate()
+  let dispatch = useAppDispatch()
+  let isLoading = useAppSelector(state => state.isLoading)
+  useEffect(() => {
+    let delayEffect = async() => {
+      dispatch(userActions.setIsLoading(true))
+      let timeout = setTimeout(() => {
+        clearTimeout(timeout)
+        dispatch(userActions.setIsLoading(false))
+      }, 3000)
+    }
+    delayEffect()
+  }, [])
   return (
+    <>
+    {isLoading && <LinearProgress />}
     <Box sx={{ height: "80vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
       <Box sx={{ display: "flex", flexDirection: "column " }}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -19,6 +37,7 @@ const Error = () => {
         </Box>
       </Box>
     </Box>
+    </>
   )
 }
 
