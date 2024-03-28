@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material"
-import img1 from '../assets/img1.png'
-import img2 from '../assets/img9.png'
+// import img1 from '../assets/img1.png'
+// import img2 from '../assets/img9.png'
 import { Link } from "react-router-dom"
 import { useAppSelector } from "../store/exporter"
 
@@ -60,7 +60,7 @@ function Home() {
               <div>
                 <Link
                   className="nav-link"
-                  to='/login'
+                  to='/signup'
                   style={{ margin: "10px" }}
                 >
                   <button style={{ color: "--clr:#0FF0FC", backgroundColor: "red", width: "150px" }}>
@@ -75,7 +75,7 @@ function Home() {
       </Box>
 
 
-      <Box sx={{ display: "flex", flexDirection: { lg: "row", xs: "column" }, gap: "50px", alignItems: "center", mt: { lg: "120px", xs: "90px" }, ml: { lg: "120px", xs: "20px" }, height: "auto" }}>
+      {/* <Box sx={{ display: "flex", flexDirection: { lg: "row", xs: "column" }, gap: "50px", alignItems: "center", mt: { lg: "120px", xs: "90px" }, ml: { lg: "120px", xs: "20px" }, height: "auto" }}>
         <Box>
           <img src={img1} style={{ height: "auto", width: "400px" }}></img>
         </Box>
@@ -111,7 +111,7 @@ function Home() {
         <Box>
           <img src={img2} style={{ height: "auto", width: "400px" }}></img>
         </Box>
-      </Box>
+      </Box> */}
 
     </Box>
   )

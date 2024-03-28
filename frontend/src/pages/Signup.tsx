@@ -1,4 +1,4 @@
-import { Form, Link } from "react-router-dom"
+import { Form, Link, useNavigation } from "react-router-dom"
 import type { ActionFunction } from "react-router";
 import Animation from "../components/Animation";
 import axios, { AxiosResponse } from "axios";
@@ -8,7 +8,7 @@ import { userActions } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { LinearProgress, useMediaQuery, useTheme } from "@mui/material";
 
 function Signup() {
 
@@ -16,6 +16,8 @@ function Signup() {
   let dispatch = useAppDispatch();
   let isLoggedIn = useAppSelector(state => state.isLoggedIn);
   let navigate = useNavigate();
+  const navigation = useNavigation();
+  let isSubmitting = navigation.state === 'submitting'
 
   let theme = useTheme()
   const isScreenSizeGreaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
@@ -43,6 +45,8 @@ function Signup() {
   }, [isLoggedIn, actionResponse, navigate, prevIsLoggedInRef]);
 
   return (
+    <>
+      {isSubmitting && <LinearProgress sx={{position:"absolute",top:"0px", left:"0px", right:"0px", bottom:"0px"}} />}
     <div className="container">
       {isScreenSizeGreaterThanMd && 
         <div>
@@ -83,7 +87,7 @@ function Signup() {
                 width: "100px",
                 height: "30px",
                 margin: "0px"
-              }} value="Signup" />
+              }} value={isSubmitting ? "Submitting" : "Signup"} />
             </a>
           </div>
         </Form>
@@ -93,6 +97,7 @@ function Signup() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

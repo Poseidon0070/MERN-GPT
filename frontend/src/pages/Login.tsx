@@ -1,18 +1,21 @@
-import { ActionFunction, Form, Link, useActionData, useNavigate } from "react-router-dom"
+import { ActionFunction, Form, Link, useActionData, useNavigate, useNavigation } from "react-router-dom"
 import Animation from "../components/Animation"
 import axios, { AxiosResponse } from "axios";
 import { useAppDispatch, useAppSelector } from "../store/exporter";
 import { useEffect, useRef } from "react";
 import { userActions } from "../store/store";
 import { toast } from "sonner";
-import { useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
+import LinearProgress from '@mui/material/LinearProgress';
 
 function Login() {
   let actionResponse: any = useActionData();
   let dispatch = useAppDispatch();
   let isLoggedIn = useAppSelector(state => state.isLoggedIn);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+  let isSubmitting = navigation.state === 'submitting'
   let theme = useTheme()
   const isScreenSizeGreaterThanMd = useMediaQuery(theme.breakpoints.up('md'));
  
@@ -43,6 +46,8 @@ function Login() {
   }, [isLoggedIn, actionResponse, navigate, prevIsLoggedInRef]);
  
   return (
+    <>
+      {isSubmitting && <Box sx={{position:"absolute",top:"0px", left:"0px", right:"0px", bottom:"0px"}}><LinearProgress /></Box>}
     <div className="container">
       {isScreenSizeGreaterThanMd && 
         <div>
@@ -78,8 +83,8 @@ function Login() {
                 textDecoration: 'none',
                 width: "100px",
                 height: "30px",
-                margin: "0px"
-              }} value="Login" />
+                margin: "0px",
+              }} value={isSubmitting ? "Submitting..." : "Login"} />
             </a>
           </div>
         </Form>
@@ -89,6 +94,7 @@ function Login() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

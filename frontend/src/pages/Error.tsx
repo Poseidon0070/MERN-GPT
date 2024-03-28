@@ -22,7 +22,9 @@ const Error = () => {
   }, [])
   return (
     <>
-    {isLoading && <LinearProgress />}
+    {isLoading ? (
+      <LinearProgress sx={{position:"absolute"}}/>
+    ) : (
     <Box sx={{ height: "80vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
       <Box sx={{ display: "flex", flexDirection: "column " }}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -37,6 +39,8 @@ const Error = () => {
         </Box>
       </Box>
     </Box>
+
+    )}
     </>
   )
 }
