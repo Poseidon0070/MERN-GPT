@@ -66,6 +66,3 @@ git clone https://github.com/Poseidon0070/MERN-GPT
 - npm run dev
 - cd ./frontend
 - npm run dev
-
-
-For more details and to explore the codebase, visit the [MERN-GPT GitHub repository](https://github.com/Poseidon0070/MERN-GPT).
