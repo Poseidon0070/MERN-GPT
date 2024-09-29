@@ -10,6 +10,16 @@ MERN-GPT is an AI assistance application integrated with an image generator. Thi
 - **Database**: MongoDB
 - **Authentication**: JWT
 
+  ## Hosting
+
+- **Backend**: 
+  - Hosted on AWS Lambda via API Gateway
+
+- **Frontend**: 
+  - Stored in an S3 bucket
+  - Distributed through AWS CloudFront for optimized performance and low-latency access
+
+
 ## Features
 
 ### Frontend
